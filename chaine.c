@@ -29,14 +29,6 @@ Chaines* lectureChaines(FILE* f){
     
     // creer les CellChaine
     res->chaines = creerCellChaineRec(nbChaine, f);
-        // CellChaine* cur = NULL;
-        // while(fscanf(f, "%d %d", &numero, &nbPoints) == 2){
-        //     cur = (CellChaine*) calloc(1, sizeof(CellChaine));
-        //     cur->numero = numero;
-        //     cur->points = creerCellPointRec(nbPoints, f);
-        //     cur->suiv = res->chaines;
-        //     res->chaines = cur;
-        // }
 
     return res;
 }
