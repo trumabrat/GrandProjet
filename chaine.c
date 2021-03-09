@@ -27,23 +27,38 @@ Chaines* lectureChaines(FILE* f){
     res->nbChaines = nbChaine;
     res->gamma = gamma;
     
-    // creer les CellChaines
-    CellChaine* cur = NULL;
-    while(fgets(buffer, length, f)){
-        if(sscanf(buffer, " %d %d", &numero, &nbPoints) != 2) continue;
-        cur = (CellChaine*) calloc(1, sizeof(CellChaine));
-        cur->numero = numero;
-        for(nbPointsCrees = 0; nbPointsCrees < nbPoints; nbPointsCrees++){
-            // printf("%s\n", buffer);
-            unPoint = (CellPoint*) calloc(1, sizeof(CellPoint));
-            sscanf(buffer, " %lf %lf", &(unPoint->x), &(unPoint->y));
-            unPoint->suiv = cur->points;
-            cur->points= unPoint;
-        }
-        cur->suiv = res->chaines;
-        res->chaines = cur;
-    }
+    // creer les CellChaine
+    res->chaines = creerCellChaineRec(nbChaine, f);
+        // CellChaine* cur = NULL;
+        // while(fscanf(f, "%d %d", &numero, &nbPoints) == 2){
+        //     cur = (CellChaine*) calloc(1, sizeof(CellChaine));
+        //     cur->numero = numero;
+        //     cur->points = creerCellPointRec(nbPoints, f);
+        //     cur->suiv = res->chaines;
+        //     res->chaines = cur;
+        // }
 
+    return res;
+}
+
+// creer CellPoint d'une maniere recursive
+CellPoint* creerCellPointRec(int nb, FILE* f){
+    if(nb == 0) return NULL;
+    CellPoint* unPoint = (CellPoint*) malloc(sizeof(CellPoint));
+    fscanf(f, " %lf %lf", &(unPoint->x), &(unPoint->y));
+    unPoint->suiv = creerCellPointRec(nb-1, f);
+    return unPoint;
+}
+
+// creer CellChaine d'une maniere recursive
+CellChaine* creerCellChaineRec(int nb, FILE* f){
+    if(nb == 0) return NULL;
+    CellChaine* res = (CellChaine*) calloc(1, sizeof(CellChaine));
+    int nbPoints;
+    if(fscanf(f, " %d %d", &(res->numero), &nbPoints) == 2){
+        res->points = creerCellPointRec(nbPoints, f);
+        res->suiv = creerCellChaineRec(nb-1, f);
+    }
     return res;
 }
 
