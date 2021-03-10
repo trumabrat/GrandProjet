@@ -2,7 +2,7 @@
 #include "SVGwriter.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <ctype.h>
+#include <math.h>
 
 Chaines* lectureChaines(FILE* f){
     int nbChaine, gamma;
@@ -10,6 +10,7 @@ Chaines* lectureChaines(FILE* f){
     CellPoint* unPoint = NULL;
     int length = 100;
     char buffer[length];
+
     // recuperer le nombre de chaines
     fgets(buffer, length, f);
     sscanf(buffer, " %*s %d", &nbChaine);
@@ -33,6 +34,12 @@ Chaines* lectureChaines(FILE* f){
     return res;
 }
 
+// liberer Chaines d'une maniere recursive
+void libererChaines(Chaines* chaines){
+    libererCellChaineRec(chaines->chaines);
+    free(chaines);
+}
+
 // creer CellPoint d'une maniere recursive
 CellPoint* creerCellPointRec(int nb, FILE* f){
     if(nb == 0) return NULL;
@@ -40,6 +47,13 @@ CellPoint* creerCellPointRec(int nb, FILE* f){
     fscanf(f, " %lf %lf", &(unPoint->x), &(unPoint->y));
     unPoint->suiv = creerCellPointRec(nb-1, f);
     return unPoint;
+}
+
+// liberer CellPoint d'une maniere recursive
+void libererCellPointRec(CellPoint* p){
+    if(!p) return;
+    libererCellPointRec(p->suiv);
+    free(p);
 }
 
 // creer CellChaine d'une maniere recursive
@@ -52,6 +66,14 @@ CellChaine* creerCellChaineRec(int nb, FILE* f){
         res->suiv = creerCellChaineRec(nb-1, f);
     }
     return res;
+}
+
+// liberer CellChaine d'une maniere recursive
+void libererCellChaineRec(CellChaine* ch){
+    if(!ch) return;
+    libererCellChaineRec(ch->suiv);
+    libererCellPointRec(ch->points);
+    free(ch);
 }
 
 //Cette fonction va ecrire une instance de "Listes de Chaines" sous le format precisé en exercice 1
@@ -126,3 +148,55 @@ void ecrireChaines(Chaines *C,FILE *f){
 //     }
 //     SVGfinalize(&svg);
 // }
+
+// renvoie la distance entre 2 points si non vide
+double distancePoints(CellPoint* p1, CellPoint* p2){
+    if(!p1 || !p2) return 0.;
+    return sqrt(pow(p1->x - p2->x,2) + pow(p1->x - p2->x, 2));
+}
+
+// renvoie la longueur d'une chaine
+double longueurChaine(CellChaine* c){
+    double res = 0.;
+    if(c){
+        CellPoint* cur = c->points;
+        CellPoint* next = c->points->suiv;
+        while(next){
+            res += distancePoints(cur, next);
+            cur = next;
+            next = next->suiv;
+        }
+    }
+    return res;
+}
+
+// renvoie la longueur de toutes les chaines
+double longueurTotale(Chaines *C){
+    double res = 0.;
+    if(C){
+        CellChaine* ch = C->chaines;
+        while(ch){
+            res += longueurChaine(ch);
+            ch = ch->suiv;
+        }
+    }
+    return res;
+}
+
+int comptePointsTotal(Chaines *C){
+    int res = 0;
+    if(C){
+        CellChaine* curCellChaine = C->chaines;
+        CellPoint* curPoint = NULL;
+        while (curCellChaine)
+        {
+            curPoint = curCellChaine->points;
+            while(curPoint){
+                res++;
+                curPoint = curPoint->suiv;
+            }
+            curCellChaine = curCellChaine->suiv;
+        }
+    }
+    return res;
+}

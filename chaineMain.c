@@ -11,6 +11,8 @@ int main(int argc, char const *argv[])
     FILE *f2 = fopen("ecriture_chaine.cha", "w");
     ecrireChaines(c, f2);
     // afficheChainesSVG(c, "chaine");
+    printf("LongueurTotal = %lf, nombre de points = %d\n", longueurTotale(c), comptePointsTotal(c));
+    libererChaines(c);
     fclose(f);
     fclose(f2);
     return 0;
