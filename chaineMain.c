@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main(int argc, char const *argv[])
+int main()
 {
     FILE* f = NULL;
     f = fopen("00014_burma.cha", "r");

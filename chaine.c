@@ -6,20 +6,16 @@
 
 Chaines* lectureChaines(FILE* f){
     int nbChaine, gamma;
-    int length = 100;
-    char buffer[length];
 
     // recuperer le nombre de chaines
-    fgets(buffer, length, f);
-    sscanf(buffer, " %*s %d", &nbChaine);
+    fscanf(f, " %*s %d", &nbChaine);
     if(nbChaine == 0){
         printf("Erreur : nbChaine = 0 dans le fichier.");
         return NULL;
     }
 
     // recuperer la valeur de gamma
-    fgets(buffer, length, f);
-    sscanf(buffer, " %*s %d", &gamma);
+    fscanf(f, " %*s %d", &gamma);
     
     //creer une instance de Chaines
     Chaines* res = (Chaines*) calloc(1, sizeof(Chaines));

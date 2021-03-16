@@ -1,4 +1,5 @@
 #include "Reseau.h"
+#include "SVGwriter.h"
 #include <math.h>
 #include <assert.h>
 #define DOUBLE_PRECISION 0.00001
@@ -34,25 +35,18 @@ Noeud* creerNoeud(int num, double x, double y){
     return res;
 }
 
-// int comparer_ordonnees(double x1, double y1, double x2, double y2){
-//     return fabs(x1 - x2) < 0.00001 && fabs(y1 - y2) < 0.00001;
-// }
 
-CellNoeud* ajouterVoisin(CellNoeud* prev, CellNoeud* next){
-    assert(prev && prev->nd);
-    if(!next) return NULL;
-    // CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
-    // CellNoeud* cellV = (CellNoeud*) calloc(1, sizeof(CellNoeud));
-    CellNoeud* voisinTmp = next->nd->voisins;
-    CellNoeud* voisinTmp2 = prev->nd->voisins;
-    next->nd->voisins = prev;
-    prev->nd->voisins = 
+CellNoeud* ajouterVoisin(CellNoeud* prevC, Noeud* next){
+    if(!next || !prevC) return NULL;
+    assert(prevC->nd);
+    CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+    cellN->nd = next;
 
-    prev->nd->voisins = next;
-    next->voisins = prevC->nd->voisins;
+    cellN->suiv = prevC->nd->voisins;
     prevC->nd->voisins = cellN;
 
-    prevC-> = cellN;
+    prevC->suiv = next->voisins;
+    next->voisins = prevC;
 
     return cellN;
 }
@@ -92,6 +86,8 @@ Reseau* reconstitueReseauListe(Chaines *C){
         pointTete = chaineTmp->points;// on fait hypothese que ce n'est pas NULL
         pointTmp = pointTete;
         noeudTete = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
+        cndPrev = (CellNoeud*) calloc(1, sizeof(CellNoeud*));
+        cndPrev->nd = noeudTete;
         pointPrev = pointTmp;
         pointTmp = pointTmp->suiv;
 
@@ -105,7 +101,8 @@ Reseau* reconstitueReseauListe(Chaines *C){
             // Junji : Je sais pas comment faire, faut demander au prof
             // car si on creer on a que Noeud, mais liste de voisins a besoin de CellNoeud
             // si on en creer, il y aurait plusieur CellNoeud dont nd pointe vers le meme Noeud
-            ajouterVoisin(noeudTmp, );
+            // resolu pour l'instant
+            cndPrev = ajouterVoisin(cndPrev, noeudTmp);
 
             // passe au point suivant
             pointPrev = pointTmp;
@@ -124,5 +121,75 @@ Reseau* reconstitueReseauListe(Chaines *C){
     reso->commodites = commoditeTmp;
 
     return reso;
+}
+
+
+// int nbLiaisons(Reseau *R){
+//     //compte le nombre de liaisons qui existent dans le Reseau R
+//     int cnt = 0;
+//     CellNoeud *tmp = R->noeuds;
+//     //on doit utiliser une methode qui ignore les noeuds deja verifies, pour eviter de compter une liaison plusieurs fois
+//     CellNoeud *vus = NULL;
+//     while (tmp)
+//     {
+        
+//     }
+// }
+// 
+// void ecrireReseau(Reseau *R, FILE *f){
+//     fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
+//     fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R));
+//     fprintf(f, "NbCommodites: %d\n", nbCommodites(R));
+//     fprintf(f, "Gamma: %d\n", R->gamma);
+//     fprintf(f,"\n");
+
+//     int cpt = 0;// pour securiser le processus
+//     CellNoeud* cnd = R->noeuds;
+//     Noeud* nd = NULL;
+//     while(cnd){
+//         assert(cpt<R->nbNoeuds);
+//         nd = cnd->nd;
+//         fprintf(f, "v %d %.6lf %.6lf\n", nd->num, nd->x, nd->y);
+//         cnd = cnd->suiv;
+//         cpt++;
+//     }
+//     fprintf(f,"\n");
+
+//     cnd = R->noeuds;
+//     Noeud* nd2 = NULL;
+//     CellNoeud* cndVoisin = ;
+//     while(cndVoisin){
+
+//     }
+
+
+// }
+
+void afficheReseauSVG(Reseau *R, char* nomInstance){
+    CellNoeud *courN,*courv;
+    SVGwriter svg;
+    double maxx=0,maxy=0,minx=1e6,miny=1e6;
+
+    courN=R->noeuds;
+    while (courN!=NULL){
+        if (maxx<courN->nd->x) maxx=courN->nd->x;
+        if (maxy<courN->nd->y) maxy=courN->nd->y;
+        if (minx>courN->nd->x) minx=courN->nd->x;
+        if (miny>courN->nd->y) miny=courN->nd->y;
+        courN=courN->suiv;
+    }
+    SVGinit(&svg,nomInstance,500,500);
+    courN=R->noeuds;
+    while (courN!=NULL){
+        SVGpoint(&svg,500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
+        courv=courN->nd->voisins;
+        while (courv!=NULL){
+            if (courv->nd->num<courN->nd->num)
+                SVGline(&svg,500*(courv->nd->x-minx)/(maxx-minx),500*(courv->nd->y-miny)/(maxy-miny),500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
+            courv=courv->suiv;
+        }
+        courN=courN->suiv;
+    }
+    SVGfinalize(&svg);
 }
 
