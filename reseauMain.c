@@ -9,11 +9,13 @@ int main()
     fclose(f);
     // afficheChainesSVG(c, "chaine");
     
-    reconstitueReseauListe(c);
+    Reseau *R = reconstitueReseauListe(c);
 
-    // FILE *f2 = fopen("ecriture_chaine.cha", "w");
-    // ecrireChaines(c, f2);
-    // fclose(f2);
+    CellNoeud *tmp = R->noeuds;
+    FILE* f2 = NULL;
+    f2 = fopen("res.txt", "w");
+    ecrireReseau(R, f2);
+    fclose(f2);
     libererChaines(c);
     return 0;
 }

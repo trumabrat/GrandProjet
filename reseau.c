@@ -98,10 +98,6 @@ Reseau* reconstitueReseauListe(Chaines *C){
             noeudTmp = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
             
             // On met `a jour la liste des voisins de p et celles de ses voisins.
-            // Junji : Je sais pas comment faire, faut demander au prof
-            // car si on creer on a que Noeud, mais liste de voisins a besoin de CellNoeud
-            // si on en creer, il y aurait plusieur CellNoeud dont nd pointe vers le meme Noeud
-            // resolu pour l'instant
             cndPrev = ajouterVoisin(cndPrev, noeudTmp);
 
             // passe au point suivant
@@ -124,72 +120,110 @@ Reseau* reconstitueReseauListe(Chaines *C){
 }
 
 
-// int nbLiaisons(Reseau *R){
-//     //compte le nombre de liaisons qui existent dans le Reseau R
-//     int cnt = 0;
-//     CellNoeud *tmp = R->noeuds;
-//     //on doit utiliser une methode qui ignore les noeuds deja verifies, pour eviter de compter une liaison plusieurs fois
-//     CellNoeud *vus = NULL;
-//     while (tmp)
-//     {
-        
-//     }
-// }
-// 
-// void ecrireReseau(Reseau *R, FILE *f){
-//     fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
-//     fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R));
-//     fprintf(f, "NbCommodites: %d\n", nbCommodites(R));
-//     fprintf(f, "Gamma: %d\n", R->gamma);
-//     fprintf(f,"\n");
-
-//     int cpt = 0;// pour securiser le processus
-//     CellNoeud* cnd = R->noeuds;
-//     Noeud* nd = NULL;
-//     while(cnd){
-//         assert(cpt<R->nbNoeuds);
-//         nd = cnd->nd;
-//         fprintf(f, "v %d %.6lf %.6lf\n", nd->num, nd->x, nd->y);
-//         cnd = cnd->suiv;
-//         cpt++;
-//     }
-//     fprintf(f,"\n");
-
-//     cnd = R->noeuds;
-//     Noeud* nd2 = NULL;
-//     CellNoeud* cndVoisin = ;
-//     while(cndVoisin){
-
-//     }
-
-
-// }
-
-void afficheReseauSVG(Reseau *R, char* nomInstance){
-    CellNoeud *courN,*courv;
-    SVGwriter svg;
-    double maxx=0,maxy=0,minx=1e6,miny=1e6;
-
-    courN=R->noeuds;
-    while (courN!=NULL){
-        if (maxx<courN->nd->x) maxx=courN->nd->x;
-        if (maxy<courN->nd->y) maxy=courN->nd->y;
-        if (minx>courN->nd->x) minx=courN->nd->x;
-        if (miny>courN->nd->y) miny=courN->nd->y;
-        courN=courN->suiv;
-    }
-    SVGinit(&svg,nomInstance,500,500);
-    courN=R->noeuds;
-    while (courN!=NULL){
-        SVGpoint(&svg,500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
-        courv=courN->nd->voisins;
-        while (courv!=NULL){
-            if (courv->nd->num<courN->nd->num)
-                SVGline(&svg,500*(courv->nd->x-minx)/(maxx-minx),500*(courv->nd->y-miny)/(maxy-miny),500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
-            courv=courv->suiv;
+int nbLiaisons(Reseau *R){ //Mihajlo
+    //compte le nombre de liaisons qui existent dans le Reseau R
+    int cnt = 0;
+    CellNoeud *tmp = R->noeuds;
+    while (tmp)
+    {
+        CellNoeud *voisins = tmp->nd->voisins;
+        while(voisins){
+            cnt++;
+            if(tmp->nd->num < voisins->nd->num)
+                printf("%d %d\n", tmp->nd->num, voisins->nd->num);
+            voisins = voisins->suiv;
         }
-        courN=courN->suiv;
+
+        tmp = tmp->suiv;
     }
-    SVGfinalize(&svg);
+
+    //on va diviser le compteur par 2, car on a compté chaque liaison 2 fois
+    return (cnt/2) + 1;
 }
+
+int nbCommodites(Reseau *R){ //Mihajlo
+    //compte le nombre de commoditées dans le Reseau R
+    int cmp = 0;
+    CellCommodite *tmp = R->commodites;
+    while(tmp){
+        cmp++;
+        tmp = tmp->suiv;
+    }
+
+    return cmp;
+}
+
+void ecrireReseau(Reseau *R, FILE *f){
+    fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
+    fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R));
+    fprintf(f, "NbCommodites: %d\n", nbCommodites(R));
+    fprintf(f, "Gamma: %d\n", R->gamma);
+    fprintf(f,"\n");
+
+    int cpt = 0;// pour securiser le processus
+    CellNoeud* cnd = R->noeuds;
+    Noeud* nd = NULL;
+    while(cnd){
+        assert(cpt<R->nbNoeuds);
+        nd = cnd->nd;
+        fprintf(f, "v %d %.6lf %.6lf\n", nd->num, nd->x, nd->y);
+        cnd = cnd->suiv;
+        cpt++;
+    }
+    fprintf(f,"\n");
+
+    CellNoeud* cndVoisin = NULL;
+    //Pour chaque noeud du reseau
+    for (cnd = R->noeuds, cpt = 0; cnd ; cnd = cnd->suiv, cpt++)
+    {
+        assert(cpt < R->nbNoeuds);// securisation
+        cndVoisin = cnd->nd->voisins;
+
+        // Pour chaque voisin
+        while(cndVoisin){
+            if(cndVoisin->nd->num < cnd->nd->num){
+                fprintf(f, "l %d %d\n", cndVoisin->nd->num, cnd->nd->num);
+            }
+            cndVoisin = cndVoisin->suiv;
+        }
+    }
+    fprintf(f, "\n");
+
+    // Pour chaque commodite
+    CellCommodite* cell_com = R->commodites;
+    while (cell_com)
+    {
+        fprintf(f, "k %d %d\n", cell_com->extrA->num, cell_com->extrB->num);
+        cell_com = cell_com->suiv;
+    }
+    fprintf(f,"\n");
+}
+
+// void afficheReseauSVG(Reseau *R, char* nomInstance){
+//     CellNoeud *courN,*courv;
+//     SVGwriter svg;
+//     double maxx=0,maxy=0,minx=1e6,miny=1e6;
+
+//     courN=R->noeuds;
+//     while (courN!=NULL){
+//         if (maxx<courN->nd->x) maxx=courN->nd->x;
+//         if (maxy<courN->nd->y) maxy=courN->nd->y;
+//         if (minx>courN->nd->x) minx=courN->nd->x;
+//         if (miny>courN->nd->y) miny=courN->nd->y;
+//         courN=courN->suiv;
+//     }
+//     SVGinit(&svg,nomInstance,500,500);
+//     courN=R->noeuds;
+//     while (courN!=NULL){
+//         SVGpoint(&svg,500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
+//         courv=courN->nd->voisins;
+//         while (courv!=NULL){
+//             if (courv->nd->num<courN->nd->num)
+//                 SVGline(&svg,500*(courv->nd->x-minx)/(maxx-minx),500*(courv->nd->y-miny)/(maxy-miny),500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
+//             courv=courv->suiv;
+//         }
+//         courN=courN->suiv;
+//     }
+//     SVGfinalize(&svg);
+// }
 
