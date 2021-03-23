@@ -38,13 +38,36 @@ Noeud* creerNoeud(int num, double x, double y){
 //     return fabs(x1 - x2) < 0.00001 && fabs(y1 - y2) < 0.00001;
 // }
 
-CellNoeud* ajouterVoisin(CellNoeud* prev, CellNoeud* next){
-    assert(prev && prev->nd);
-    if(!next) return NULL;
-    // CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
-    // CellNoeud* cellV = (CellNoeud*) calloc(1, sizeof(CellNoeud));
-    CellNoeud* voisinTmp = next->nd->voisins;
-    CellNoeud* voisinTmp2 = prev->nd->voisins;
+// CellNoeud* ajouterVoisin(CellNoeud* prev, CellNoeud* next){
+//     assert(prev && prev->nd);
+//     if(!next) return NULL;
+//     // CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+//     // CellNoeud* cellV = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+//     CellNoeud* voisinTmp = next->nd->voisins;
+//     CellNoeud* voisinTmp2 = prev->nd->voisins;
+//     next->nd->voisins = prev;
+//     prev->nd->voisins = 
+
+//     prev->nd->voisins = next;
+//     next->voisins = prevC->nd->voisins;
+//     prevC->nd->voisins = cellN;
+
+//     prevC-> = cellN;
+
+//     return cellN;
+// }
+
+CellNoeud* ajouterVoisin(Noeud* prev, Noeud* next){
+    if(!next || !prev) return NULL;
+    CellNoeud* cellP = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+    CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+    // CellNoeud* voisinTmp = next->nd->voisins;
+    // CellNoeud* voisinTmp2 = prev->nd->voisins
+    cellP->nd = prev;
+    cellN->nd = next;
+
+    cellP->suiv = prev->voisins;
+    cellN
     next->nd->voisins = prev;
     prev->nd->voisins = 
 
