@@ -1,5 +1,5 @@
 NbNoeuds: 12
-NbLiaisons: 16
+NbLiaisons: 15
 NbCommodites: 8
 Gamma: 3
 

@@ -131,7 +131,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
 }
 
 
-int nbLiaisons(Reseau *R){ //Mihajlo
+int nbLiaisons(Reseau *R){ //Mihajlo (c'est bon now, junji)
     //compte le nombre de liaisons qui existent dans le Reseau R
     int cnt = 0;
     CellNoeud *tmp = R->noeuds;
@@ -140,8 +140,6 @@ int nbLiaisons(Reseau *R){ //Mihajlo
         CellNoeud *voisins = tmp->nd->voisins;
         while(voisins){
             cnt++;
-            if(tmp->nd->num < voisins->nd->num)
-                printf("%d %d\n", tmp->nd->num, voisins->nd->num);
             voisins = voisins->suiv;
         }
 
@@ -149,7 +147,7 @@ int nbLiaisons(Reseau *R){ //Mihajlo
     }
 
     //on va diviser le compteur par 2, car on a compté chaque liaison 2 fois
-    return (cnt/2) + 1;
+    return (cnt/2);
 }
 
 int nbCommodites(Reseau *R){ //Mihajlo
@@ -210,31 +208,30 @@ void ecrireReseau(Reseau *R, FILE *f){
     fprintf(f,"\n");
 }
 
-// void afficheReseauSVG(Reseau *R, char* nomInstance){
-//     CellNoeud *courN,*courv;
-//     SVGwriter svg;
-//     double maxx=0,maxy=0,minx=1e6,miny=1e6;
+void afficheReseauSVG(Reseau *R, char* nomInstance){
+    CellNoeud *courN,*courv;
+    SVGwriter svg;
+    double maxx=0,maxy=0,minx=1e6,miny=1e6;
 
-//     courN=R->noeuds;
-//     while (courN!=NULL){
-//         if (maxx<courN->nd->x) maxx=courN->nd->x;
-//         if (maxy<courN->nd->y) maxy=courN->nd->y;
-//         if (minx>courN->nd->x) minx=courN->nd->x;
-//         if (miny>courN->nd->y) miny=courN->nd->y;
-//         courN=courN->suiv;
-//     }
-//     SVGinit(&svg,nomInstance,500,500);
-//     courN=R->noeuds;
-//     while (courN!=NULL){
-//         SVGpoint(&svg,500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
-//         courv=courN->nd->voisins;
-//         while (courv!=NULL){
-//             if (courv->nd->num<courN->nd->num)
-//                 SVGline(&svg,500*(courv->nd->x-minx)/(maxx-minx),500*(courv->nd->y-miny)/(maxy-miny),500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
-//             courv=courv->suiv;
-//         }
-//         courN=courN->suiv;
-//     }
-//     SVGfinalize(&svg);
-// }
-
+    courN=R->noeuds;
+    while (courN!=NULL){
+        if (maxx<courN->nd->x) maxx=courN->nd->x;
+        if (maxy<courN->nd->y) maxy=courN->nd->y;
+        if (minx>courN->nd->x) minx=courN->nd->x;
+        if (miny>courN->nd->y) miny=courN->nd->y;
+        courN=courN->suiv;
+    }
+    SVGinit(&svg,nomInstance,500,500);
+    courN=R->noeuds;
+    while (courN!=NULL){
+        SVGpoint(&svg,500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
+        courv=courN->nd->voisins;
+        while (courv!=NULL){
+            if (courv->nd->num<courN->nd->num)
+                SVGline(&svg,500*(courv->nd->x-minx)/(maxx-minx),500*(courv->nd->y-miny)/(maxy-miny),500*(courN->nd->x-minx)/(maxx-minx),500*(courN->nd->y-miny)/(maxy-miny));
+            courv=courv->suiv;
+        }
+        courN=courN->suiv;
+    }
+    SVGfinalize(&svg);
+}

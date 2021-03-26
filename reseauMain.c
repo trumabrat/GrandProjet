@@ -16,6 +16,7 @@ int main()
     f2 = fopen("res.txt", "w");
     ecrireReseau(R, f2);
     fclose(f2);
+    afficheReseauSVG(R, "reso");
     libererChaines(c);
     return 0;
 }
