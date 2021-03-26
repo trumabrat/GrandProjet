@@ -1,0 +1,75 @@
+// CellNoeud* supprimerCellNoeudsMemeNoeud(CellNoeud* cnd_liste, Noeud* s){
+//     if(!cnd_liste || !s) return cnd_liste;
+//     CellNoeud* cur = cnd_liste;
+//     CellNoeud* prev = NULL;
+//     while(cur->nd == s){
+//         prev = cur;
+//         cur = cur->suiv;
+//         free(prev);
+//     }
+//     while(cur){
+//         if(cur->nd == s){
+//             prev->suiv = cur->suiv;
+//             free(cur);
+//             cur = prev->suiv;
+//         }else{
+//             prev = cur;
+//             cur = cur->suiv;
+//         }
+//     }
+//     return cnd_liste;
+// }
+
+// CellNoeud* supprimerMemeVoisin(CellNoeud* cnd){
+//     if(!cnd) return NULL;
+//     CellNoeud* tmp = cnd;
+//     CellNoeud* voisin = NULL;
+    
+//     while(tmp){
+//         voisin = tmp->nd->voisins;
+//         while(voisin){
+//             voisin->suiv = supprimerCellNoeudsMemeNoeud(voisin->suiv, voisin->nd);
+//             voisin = voisin->suiv;
+//         }
+//         tmp = tmp->suiv;
+//     }
+//     return cnd;
+// }
+
+
+// CellNoeud * insererNoeud(CellNoeud * liste_nd, CellNoeud *insere){
+//     CellNoeud * tmp = liste_nd;
+//     while(tmp){
+//         if(fabs(tmp->nd->x - insere->nd->x) < DOUBLE_PRECISION && fabs(tmp->nd->y - insere->nd->y) < DOUBLE_PRECISION){
+//             printf("deja dans la liste\n");
+//             return liste_nd;
+//         }
+//         tmp = tmp->suiv;
+//     }
+//     insere->suiv = liste_nd;
+//     liste_nd = insere;
+//     printf("element est insere\n");
+//     return liste_nd; 
+// }
+
+// CellNoeud* ajouterVoisin(CellNoeud* prevC, Noeud* next){
+//     if(!next || !prevC) return NULL;
+//     assert(prevC->nd);
+//     CellNoeud* tmp = prevC->nd->voisins;
+//     while(tmp){
+//         if(tmp->nd == next){
+//             return tmp;
+//         }
+//         tmp = tmp->suiv;
+//     }
+//     CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+//     cellN->nd = next;
+
+//     cellN->suiv = prevC->nd->voisins;
+//     prevC->nd->voisins = cellN;
+
+//     prevC->suiv = next->voisins;
+//     next->voisins = prevC;
+
+//     return cellN;
+// }

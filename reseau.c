@@ -9,7 +9,7 @@ Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     int i;
     CellNoeud* cellnoeud = R->noeuds;
     Noeud* noeud = NULL;
-    for (i = 0; i < R->nbNoeuds; i++, cellnoeud = cellnoeud->suiv)
+    for (i = 0; i < R->nbNoeuds && cellnoeud; i++, cellnoeud = cellnoeud->suiv)
     {
         noeud = cellnoeud->nd;
         if(fabs(noeud->x - x) < DOUBLE_PRECISION && fabs(noeud->y - y) < DOUBLE_PRECISION){
@@ -35,21 +35,32 @@ Noeud* creerNoeud(int num, double x, double y){
     return res;
 }
 
-
-CellNoeud* ajouterVoisin(CellNoeud* prevC, Noeud* next){
-    if(!next || !prevC) return NULL;
-    assert(prevC->nd);
-    CellNoeud* cellN = (CellNoeud*) calloc(1, sizeof(CellNoeud));
-    cellN->nd = next;
-
-    cellN->suiv = prevC->nd->voisins;
-    prevC->nd->voisins = cellN;
-
-    prevC->suiv = next->voisins;
-    next->voisins = prevC;
-
-    return cellN;
+CellNoeud* creerCellNoeud(Noeud* n, CellNoeud* suiv){
+    CellNoeud* res = (CellNoeud*) calloc(1, sizeof(CellNoeud));
+    res->nd = n;
+    res->suiv = suiv;
+    return res;
 }
+
+
+
+Noeud* ajouterVoisin(Noeud* prev, Noeud* next){
+    if(!next) return NULL;
+    CellNoeud* tmp = prev->voisins;
+    while(tmp){
+        if(tmp->nd == next){
+            return next;
+        }
+        tmp = tmp->suiv;
+    }
+    CellNoeud* cellN = creerCellNoeud(next, prev->voisins);
+    prev->voisins = cellN;
+
+    next->voisins = creerCellNoeud(prev, next->voisins);
+
+    return next;
+}
+
 
 CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* suiv){
     CellCommodite* res = (CellCommodite*) calloc(1, sizeof(CellCommodite));
@@ -58,6 +69,8 @@ CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* sui
     res->suiv = suiv;
     return res;
 }
+
+
 
 Reseau* reconstitueReseauListe(Chaines *C){
 
@@ -69,11 +82,9 @@ Reseau* reconstitueReseauListe(Chaines *C){
     CellPoint* pointTmp = NULL;
     CellPoint* pointPrev = NULL;
     CellPoint* pointTete = NULL;
+    Noeud* noeudPrev = NULL;
     Noeud* noeudTmp = NULL;
     Noeud* noeudTete = NULL;
-    Noeud* noeudFin = NULL;
-    CellNoeud* cndPrev = NULL;
-    CellNoeud* cndTmp = NULL;
     CellCommodite* commoditeTmp = NULL;
     // On parcourt une `a une chaque cha^ıne:
     
@@ -85,9 +96,10 @@ Reseau* reconstitueReseauListe(Chaines *C){
 
         pointTete = chaineTmp->points;// on fait hypothese que ce n'est pas NULL
         pointTmp = pointTete;
+
+        // On s'occupe du premier neoud
         noeudTete = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
-        cndPrev = (CellNoeud*) calloc(1, sizeof(CellNoeud*));
-        cndPrev->nd = noeudTete;
+        noeudPrev = noeudTete;
         pointPrev = pointTmp;
         pointTmp = pointTmp->suiv;
 
@@ -98,7 +110,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
             noeudTmp = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
             
             // On met `a jour la liste des voisins de p et celles de ses voisins.
-            cndPrev = ajouterVoisin(cndPrev, noeudTmp);
+            noeudPrev = ajouterVoisin(noeudPrev, noeudTmp);
 
             // passe au point suivant
             pointPrev = pointTmp;
@@ -115,7 +127,6 @@ Reseau* reconstitueReseauListe(Chaines *C){
     assert(!chaineTmp);
 
     reso->commodites = commoditeTmp;
-
     return reso;
 }
 

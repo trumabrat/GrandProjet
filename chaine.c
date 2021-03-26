@@ -4,29 +4,69 @@
 #include <stdio.h>
 #include <math.h>
 
-Chaines* lectureChaines(FILE* f){
+Chaines* lectureChaines(FILE *f){
+
+    Chaines *res = (Chaines *)calloc(1,sizeof(Chaines));
     int nbChaine, gamma;
+    int num, nbPoints;
+    double x, y;
 
     // recuperer le nombre de chaines
-    fscanf(f, " %*s %d", &nbChaine);
-    if(nbChaine == 0){
-        printf("Erreur : nbChaine = 0 dans le fichier.");
-        return NULL;
-    }
+    fscanf(f," %*s %d" , &nbChaine);
 
     // recuperer la valeur de gamma
-    fscanf(f, " %*s %d", &gamma);
-    
-    //creer une instance de Chaines
-    Chaines* res = (Chaines*) calloc(1, sizeof(Chaines));
+    fscanf(f," %*s %d" , &gamma);
+
     res->nbChaines = nbChaine;
     res->gamma = gamma;
+    CellChaine *liste_chaine = NULL;
+    CellChaine *cha = NULL;
+    for(int j =  0 ;  j < nbChaine ; j++){
+        cha = (CellChaine *)calloc(1, sizeof(CellChaine));
+        fscanf(f," %d %d", &num, &nbPoints);
+        cha->numero = num;
+        CellPoint *liste_point = NULL;
+        for(int i = 0 ; i < nbPoints; i++){
+            CellPoint *point = (CellPoint*)malloc(sizeof(CellPoint));
+            fscanf(f,"%lf %lf ", &x, &y);
+            point->x = x;
+            point->y = y;
+            point->suiv = liste_point;
+            liste_point = point;
+        }
+        cha->points = liste_point;
+        cha->suiv = liste_chaine;
+        liste_chaine = cha;
+    }
     
-    // creer les CellChaine
-    res->chaines = creerCellChaineRec(nbChaine, f);
-
+    res->chaines = liste_chaine;
     return res;
 }
+
+// // version recursive pour creer Chaines a partir d'un fichier
+// Chaines* lectureChaines2(FILE* f){
+//     int nbChaine, gamma;
+
+//     // recuperer le nombre de chaines
+//     fscanf(f, " %*s %d", &nbChaine);
+//     if(nbChaine == 0){
+//         printf("Erreur : nbChaine = 0 dans le fichier.");
+//         return NULL;
+//     }
+
+//     // recuperer la valeur de gamma
+//     fscanf(f, " %*s %d", &gamma);
+    
+//     //creer une instance de Chaines
+//     Chaines* res = (Chaines*) calloc(1, sizeof(Chaines));
+//     res->nbChaines = nbChaine;
+//     res->gamma = gamma;
+    
+//     // creer les CellChaine
+//     res->chaines = creerCellChaineRec(nbChaine, f);
+
+//     return res;
+// }
 
 // liberer Chaines d'une maniere recursive
 void libererChaines(Chaines* chaines){

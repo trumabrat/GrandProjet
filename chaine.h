@@ -24,6 +24,7 @@ typedef struct {
 } Chaines;
 
 Chaines* lectureChaines(FILE *f);
+// Chaines* lectureChaines2(FILE *f);
 CellPoint* creerCellPointRec(int nb, FILE* f);
 CellChaine* creerCellChaineRec(int nb, FILE* f);
 void libererCellPointRec(CellPoint* p);
