@@ -19,9 +19,12 @@ void chaineCoordMinMax(Chaines *C, double *xmin, double *ymin, double *xmax, dou
     double tmp_ymax = -INFINITY;
 
     CellChaine *tmp_chaine = C->chaines;
+
+    /*On parcourt tous les points de toutes les chaines*/
     while (tmp_chaine){
         CellPoint *tmp_points = tmp_chaine->points;
         while(tmp_points){
+            /*Verification si on a trouvé un nouveau xmin, ymin, xmax ou ymax */
             if (tmp_points->x < tmp_xmin){
                 tmp_xmin = tmp_points->x;
             }
@@ -44,4 +47,21 @@ void chaineCoordMinMax(Chaines *C, double *xmin, double *ymin, double *xmax, dou
     *xmax = tmp_xmax;
     *ymin = tmp_ymin;
     *ymax = tmp_ymax;
+}
+
+ArbreQuat *creerArbreQuat(double xc, double yc, double coteX, double coteY){
+    /*Création simple d'un ArbreQuat*/
+    ArbreQuat *new = malloc(sizeof(ArbreQuat));
+    new->xc = xc;
+    new->yc = yc;
+    new->coteX = coteX;
+    new->coteY = coteY;
+
+    new->noeud = NULL;
+    new->ne = NULL;
+    new->no = NULL;
+    new->se = NULL;
+    new->so = NULL;
+
+    return new;
 }
