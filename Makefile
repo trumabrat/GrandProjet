@@ -23,4 +23,4 @@ SVGwriter.o: SVGwriter.c SVGwriter.h
 	$(CC) -c $(CFLAGS) SVGwriter.c
 
 clean:
-	rm -f *.o *~ $(PROGRAMS)
+	rm -f *.o *.html *~ $(PROGRAMS)
