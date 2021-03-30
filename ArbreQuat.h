@@ -1,5 +1,7 @@
 #ifndef __ARBRE_QUAT_H__
 #define __ARBRE_QUAT_H__
+#include "Reseau.h"
+#include "chaine.h"
 
 /* Arbre quaternaire contenant les noeuds du reseau */
 typedef struct arbreQuat{
@@ -13,4 +15,5 @@ typedef struct arbreQuat{
     struct arbreQuat *ne;   /* Sous-arbre nord-est, pour x >= xc et y >= yc */
 } ArbreQuat;
 
+extern void chaineCoordMinMax(Chaines *C, double *xmin, double *ymin, double *xmax, double *ymax);
 #endif
