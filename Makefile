@@ -25,6 +25,12 @@ chaine.o: chaine.c
 reseau.o : reseau.c
 	$(CC) -c $(CFLAGS) $^ -lm
 
+Hachage.o : Hachage.c
+	$(CC) -c $(CFLAGS) $^ -lm
+
+hachageMain.o : Hachage.o hachageMain.c
+	$(CC) -o $@ $(CFLAGS) $^ -lm
+
 SVGwriter.o: SVGwriter.c SVGwriter.h
 	$(CC) -c $(CFLAGS) SVGwriter.c
 

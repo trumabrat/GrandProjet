@@ -4,11 +4,12 @@
 #include <assert.h>
 #define DOUBLE_PRECISION 0.00001
 
-// a tester
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     int i;
     CellNoeud* cellnoeud = R->noeuds;
     Noeud* noeud = NULL;
+
+    // recherche dans la liste
     for (i = 0; i < R->nbNoeuds && cellnoeud; i++, cellnoeud = cellnoeud->suiv)
     {
         noeud = cellnoeud->nd;
@@ -73,7 +74,6 @@ CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* sui
 
 
 Reseau* reconstitueReseauListe(Chaines *C){
-
     int i;
     Reseau* reso = (Reseau*) calloc(1, sizeof(Reseau));
     reso->gamma = C->gamma;
