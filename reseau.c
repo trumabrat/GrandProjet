@@ -73,62 +73,62 @@ CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* sui
 
 
 
-// Reseau* reconstitueReseauListe(Chaines *C){
-//     int i;
-//     Reseau* reso = (Reseau*) calloc(1, sizeof(Reseau));
-//     reso->gamma = C->gamma;
+Reseau* reconstitueReseauListe(Chaines *C){
+    int i;
+    Reseau* reso = (Reseau*) calloc(1, sizeof(Reseau));
+    reso->gamma = C->gamma;
 
-//     CellChaine* chaineTmp = C->chaines;
-//     CellPoint* pointTmp = NULL;
-//     CellPoint* pointPrev = NULL;
-//     CellPoint* pointTete = NULL;
-//     Noeud* noeudPrev = NULL;
-//     Noeud* noeudTmp = NULL;
-//     Noeud* noeudTete = NULL;
-//     CellCommodite* commoditeTmp = NULL;
-//     // On parcourt une `a une chaque cha^ıne:
+    CellChaine* chaineTmp = C->chaines;
+    CellPoint* pointTmp = NULL;
+    CellPoint* pointPrev = NULL;
+    CellPoint* pointTete = NULL;
+    Noeud* noeudPrev = NULL;
+    Noeud* noeudTmp = NULL;
+    Noeud* noeudTete = NULL;
+    CellCommodite* commoditeTmp = NULL;
+    // On parcourt une `a une chaque cha^ıne:
     
-//     for ( i = 0; i < C->nbChaines; i++, chaineTmp = chaineTmp->suiv)
-//     {
-//         // si Chaines est bien construit, les deux assert ne pose pas de probleme
-//         // si chaineTmp == NULL, on a mal compte le nombre de chaines
-//         assert(chaineTmp);
+    for ( i = 0; i < C->nbChaines; i++, chaineTmp = chaineTmp->suiv)
+    {
+        // si Chaines est bien construit, les deux assert ne pose pas de probleme
+        // si chaineTmp == NULL, on a mal compte le nombre de chaines
+        assert(chaineTmp);
 
-//         pointTete = chaineTmp->points;// on fait hypothese que ce n'est pas NULL
-//         pointTmp = pointTete;
+        pointTete = chaineTmp->points;// on fait hypothese que ce n'est pas NULL
+        pointTmp = pointTete;
 
-//         // On s'occupe du premier neoud
-//         noeudTete = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
-//         noeudPrev = noeudTete;
-//         pointPrev = pointTmp;
-//         pointTmp = pointTmp->suiv;
+        // On s'occupe du premier neoud
+        noeudTete = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
+        noeudPrev = noeudTete;
+        pointPrev = pointTmp;
+        pointTmp = pointTmp->suiv;
 
-//         // Pour chaque point p de la cha^ıne:
-//         while(pointTmp){
-//             // Si p !∈ V (on teste si le point n’a pas d´ej`a ´et´e rencontr´e auparavant)
-//                 // On ajoute dans V un nœud correspond au point p.
-//             noeudTmp = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
+        // Pour chaque point p de la cha^ıne:
+        while(pointTmp){
+            // Si p !∈ V (on teste si le point n’a pas d´ej`a ´et´e rencontr´e auparavant)
+                // On ajoute dans V un nœud correspond au point p.
+            noeudTmp = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
             
-//             // On met `a jour la liste des voisins de p et celles de ses voisins.
-//             noeudPrev = ajouterVoisin(noeudPrev, noeudTmp);
+            // On met `a jour la liste des voisins de p et celles de ses voisins.
+            noeudPrev = ajouterVoisin(noeudPrev, noeudTmp);
 
-//             // passe au point suivant
-//             pointPrev = pointTmp;
-//             pointTmp = pointTmp->suiv;
-//         }
+            // passe au point suivant
+            pointPrev = pointTmp;
+            pointTmp = pointTmp->suiv;
+        }
         
             
             
-//         // On conserve la commodit´e de la cha^ıne.
-//         assert(noeudTete && noeudTmp);
-//         commoditeTmp = creerCellCommodite(noeudTete, noeudTmp, commoditeTmp);
-//     }
-//     // si chaineTmp == NULL, on a mal compte le nombre de chaines
-//     assert(!chaineTmp);
+        // On conserve la commodit´e de la cha^ıne.
+        assert(noeudTete && noeudTmp);
+        commoditeTmp = creerCellCommodite(noeudTete, noeudTmp, commoditeTmp);
+    }
+    // si chaineTmp == NULL, on a mal compte le nombre de chaines
+    assert(!chaineTmp);
 
-//     reso->commodites = commoditeTmp;
-//     return reso;
-// }
+    reso->commodites = commoditeTmp;
+    return reso;
+}
 
 
 int nbLiaisons(Reseau *R){ //Mihajlo (c'est bon now, junji)
