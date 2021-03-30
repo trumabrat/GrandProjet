@@ -26,34 +26,9 @@ TableHachage* creerTableHachage(int taille){
     return res;
 }
 
-// Noeud* rechercheHachageNoeud(TableHachage* H, double x, double y){
-//     int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
-//     CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
-//     Noeud* nd = NULL;
-//     while(tmp){
-//         nd = tmp->nd;
-//         assert(nd); // pour securiser
-//         if(nd->x - x < DOUBLE_PRECISION && nd->y - y < DOUBLE_PRECISION){
-//             return nd;
-//         }
-//         tmp = tmp->suiv;
-//     }
-//     return NULL;
-// }
-
-// TableHachage* enregistrerHachage(TableHachage* H, Noeud* n){
-//     int indiceCase = fonctionHachage(fonctionCle(n->x, n->y), H->taille);
-//     CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
-//     CellNoeud* newCN = creerCellNoeud(n, tmp);
-//     H->tableHachageNoeud[indiceCase] = newCN;
-//     return H;
-// }
-
-Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y){
-    // recherche du noeud
+Noeud* rechercheHachageNoeud(TableHachage* H, double x, double y){
     int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
     CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
-    CellNoeud* prev = NULL;
     Noeud* nd = NULL;
     while(tmp){
         nd = tmp->nd;
@@ -61,27 +36,66 @@ Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y)
         if(nd->x - x < DOUBLE_PRECISION && nd->y - y < DOUBLE_PRECISION){
             return nd;
         }
-        prev = tmp;
         tmp = tmp->suiv;
     }
+    return NULL;
+}
 
-    // si c'est pas dans la table
-    // creation d'un nouveau noeud et ajout dans la table de hachage
+TableHachage* enregistrerHachage(TableHachage* H, Noeud* n){
+    int indiceCase = fonctionHachage(fonctionCle(n->x, n->y), H->taille);
+    CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
+    CellNoeud* newCN = creerCellNoeud(n, tmp);
+    H->tableHachageNoeud[indiceCase] = newCN;
+    return H;
+}
+
+// Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y){
+//     // recherche du noeud
+//     int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
+//     CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
+//     CellNoeud* prev = NULL;
+//     Noeud* nd = NULL;
+//     while(tmp){
+//         nd = tmp->nd;
+//         assert(nd); // pour securiser
+//         if(nd->x - x < DOUBLE_PRECISION && nd->y - y < DOUBLE_PRECISION){
+//             return nd;
+//         }
+//         prev = tmp;
+//         tmp = tmp->suiv;
+//     }
+
+//     // si c'est pas dans la table
+//     // creation d'un nouveau noeud et ajout dans la table de hachage
+//     Noeud* newNoeud = creerNoeud(++R->nbNoeuds, x, y);
+
+//     if(prev && !tmp){
+//         // prev c'est avant la fin de la table de hachage
+//         prev->suiv = creerCellNoeud(newNoeud, NULL);
+//     }else{// c'est une case vide
+//         // mettre a jour le table de hachage
+//         H->tableHachageNoeud[indiceCase] = creerCellNoeud(newNoeud, H->tableHachageNoeud[indiceCase]);
+//     }
+//     // ajout dans le reseau
+//     R->noeuds = creerCellNoeud(newNoeud, R->noeuds);
+//     return newNoeud;
+// }
+
+Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y){
+    // recherche du noeud
+    Noeud* nd = rechercheHachageNoeud(H, x, y);
+    // si dans la table
+    if(nd) return nd;
+
+    // sinon creation d'un nouveau noeud et ajout dans la table de hachage
     Noeud* newNoeud = creerNoeud(++R->nbNoeuds, x, y);
+    // // PROBLEM 
+    int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
+    H->tableHachageNoeud[indiceCase] = creerCellNoeud(newNoeud, H->tableHachageNoeud[indiceCase]);
 
-    if(prev){
-        // prev c'est avant la fin de la table de hachage
-        prev->suiv = creerCellNoeud(newNoeud, NULL);
-    }else{// c'est une case vide
-        // mettre a jour le table de hachage
-        H->tableHachageNoeud[indiceCase] = creerCellNoeud(newNoeud, tmp);
-    }
     // ajout dans le reseau
     R->noeuds = creerCellNoeud(newNoeud, R->noeuds);
     return newNoeud;
-    
-
-    
 }
 
 Reseau* reconstitueReseauHachage(Chaines *C, int M){
