@@ -38,5 +38,10 @@ void ecrireReseau(Reseau *R, FILE *f);
 int nbLiaisons(Reseau *R);
 int nbCommodites(Reseau *R);
 void afficheReseauSVG(Reseau *R, char* nomInstance);
+
+// defini pour dev
+CellNoeud* creerCellNoeud(Noeud* n, CellNoeud* suiv);
+Noeud* ajouterVoisin(Noeud* prev, Noeud* next);
+CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* suiv);
 #endif
 
