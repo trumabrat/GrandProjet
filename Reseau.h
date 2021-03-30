@@ -40,6 +40,7 @@ int nbCommodites(Reseau *R);
 void afficheReseauSVG(Reseau *R, char* nomInstance);
 
 // defini pour dev
+Noeud* creerNoeud(int num, double x, double y);
 CellNoeud* creerCellNoeud(Noeud* n, CellNoeud* suiv);
 Noeud* ajouterVoisin(Noeud* prev, Noeud* next);
 CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* suiv);

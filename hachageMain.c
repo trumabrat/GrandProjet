@@ -1,8 +1,10 @@
 #include "Hachage.h"
+#include "chaine.h"
 
 
 int main()
 {
+    // Q4.2
     float k;
     for (int i = 0; i < 11; i++)
     {
@@ -12,12 +14,17 @@ int main()
             printf("x = %d, y = %d, k = %.2f\n", i, j, k);
         }
     }
-    TableHachage* tbh = creerTableHachage(10);
-    // FILE* f = NULL;
-    // f = fopen("00014_burma.cha", "r");
-    // Chaines *c = lectureChaines(f);
-    // fclose(f);
-    // Reseau *R = reconstitueReseauListe(c);
-    // libererChaines(c);
+
+    FILE* f = NULL;
+    f = fopen("00014_burma.cha", "r");
+    Chaines *c = lectureChaines(f);
+    fclose(f);
+    Reseau *R = reconstitueReseauHachage(c, 5);
+    FILE* f2 = NULL;
+    f2 = fopen("resHachage.txt", "w");
+    ecrireReseau(R, f2);
+    fclose(f2);
+    afficheReseauSVG(R, "resoHachage");
+    libererChaines(c);
     return 0;
 }

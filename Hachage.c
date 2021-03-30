@@ -68,17 +68,27 @@ Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y)
     // si c'est pas dans la table
     // creation d'un nouveau noeud et ajout dans la table de hachage
     Noeud* newNoeud = creerNoeud(++R->nbNoeuds, x, y);
-    prev->suiv = creerCellNoeud(newNoeud, NULL);
 
+    if(prev){
+        // prev c'est avant la fin de la table de hachage
+        prev->suiv = creerCellNoeud(newNoeud, NULL);
+    }else{// c'est une case vide
+        // mettre a jour le table de hachage
+        H->tableHachageNoeud[indiceCase] = creerCellNoeud(newNoeud, tmp);
+    }
     // ajout dans le reseau
     R->noeuds = creerCellNoeud(newNoeud, R->noeuds);
     return newNoeud;
+    
+
+    
 }
 
 Reseau* reconstitueReseauHachage(Chaines *C, int M){
     int i;
     Reseau* reso = (Reseau*) calloc(1, sizeof(Reseau));
     reso->gamma = C->gamma;
+    TableHachage* H = creerTableHachage(M);
 
     CellChaine* chaineTmp = C->chaines;
     CellPoint* pointTmp = NULL;
@@ -88,8 +98,8 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
     Noeud* noeudTmp = NULL;
     Noeud* noeudTete = NULL;
     CellCommodite* commoditeTmp = NULL;
+
     // On parcourt une `a une chaque cha^ıne:
-    
     for ( i = 0; i < C->nbChaines; i++, chaineTmp = chaineTmp->suiv)
     {
         // si Chaines est bien construit, les deux assert ne pose pas de probleme
@@ -100,7 +110,7 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
         pointTmp = pointTete;
 
         // On s'occupe du premier neoud
-        noeudTete = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
+        noeudTete = rechercheCreeNoeudHachage(reso, H, pointTmp->x, pointTmp->y);
         noeudPrev = noeudTete;
         pointPrev = pointTmp;
         pointTmp = pointTmp->suiv;
@@ -109,7 +119,7 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
         while(pointTmp){
             // Si p !∈ V (on teste si le point n’a pas d´ej`a ´et´e rencontr´e auparavant)
                 // On ajoute dans V un nœud correspond au point p.
-            noeudTmp = rechercheCreeNoeudListe(reso, pointTmp->x, pointTmp->y);
+            noeudTmp = rechercheCreeNoeudHachage(reso, H, pointTmp->x, pointTmp->y);
             
             // On met `a jour la liste des voisins de p et celles de ses voisins.
             noeudPrev = ajouterVoisin(noeudPrev, noeudTmp);
@@ -119,8 +129,6 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
             pointTmp = pointTmp->suiv;
         }
         
-            
-            
         // On conserve la commodit´e de la cha^ıne.
         assert(noeudTete && noeudTmp);
         commoditeTmp = creerCellCommodite(noeudTete, noeudTmp, commoditeTmp);

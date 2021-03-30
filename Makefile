@@ -1,7 +1,7 @@
 CFLAGS = -g -Wall -Wextra -pedantic
 CC = gcc
 
-PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o
+PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o hachageMain.o
 
 .PHONY:	all clean
 
@@ -28,7 +28,7 @@ reseau.o : reseau.c
 Hachage.o : Hachage.c
 	$(CC) -c $(CFLAGS) $^ -lm
 
-hachageMain.o : Hachage.o hachageMain.c
+hachageMain.o : Hachage.o reseau.o SVGwriter.o chaine.o hachageMain.c
 	$(CC) -o $@ $(CFLAGS) $^ -lm
 
 SVGwriter.o: SVGwriter.c SVGwriter.h

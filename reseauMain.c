@@ -11,7 +11,6 @@ int main()
     
     Reseau *R = reconstitueReseauListe(c);
 
-    CellNoeud *tmp = R->noeuds;
     FILE* f2 = NULL;
     f2 = fopen("res.txt", "w");
     ecrireReseau(R, f2);

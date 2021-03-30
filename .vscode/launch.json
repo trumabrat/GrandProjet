@@ -8,7 +8,7 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/reseauMain.o",
+            "program": "${fileDirname}/hachageMain.o",
             "args": [],
             "preLaunchTask": "myTask",
             "stopAtEntry": false,
