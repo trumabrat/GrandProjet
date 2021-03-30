@@ -73,3 +73,20 @@
 
 //     return cellN;
 // }
+
+// Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y){
+//     // recherche du noeud
+//     Noeud* nd = rechercheHachageNoeud(H, x, y);
+//     // si dans la table
+//     if(nd) return nd;
+
+//     // sinon creation d'un nouveau noeud et ajout dans la table de hachage
+//     Noeud* newNoeud = creerNoeud(++R->nbNoeuds, x, y);
+
+//     int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
+//     H->tableHachageNoeud[indiceCase] = creerCellNoeud(newNoeud, H->tableHachageNoeud[indiceCase]);
+
+//     // ajout dans le reseau
+//     R->noeuds = creerCellNoeud(newNoeud, R->noeuds);
+//     return newNoeud;
+// }
