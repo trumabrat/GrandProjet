@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#define DOUBLE_PRECISION 0.00001
+
 void chaineCoordMinMax(Chaines *C, double *xmin, double *ymin, double *xmax, double *ymax){
     /*On cherche les 4 coordonées les plus petites qui se trouvent dans nos chaines C,
     xmin et ymin (meme pour xmax, ymax) vont pas etre le meme point, c seulement les 
@@ -128,6 +130,8 @@ void insererNoeudArbre(Noeud *n, ArbreQuat **a, ArbreQuat *parent){
             /*si on se trouve dans une cellule interne, on cherche ou placer le noeud n en comparant les coordonées du noeud
             par rapport au centre. On peut alors soit arriver rencontrer l'espace libre pour insérer notre noeud, soit rencontrer
             une feuille, ce qui va être géré dans le bloc d'avant.*/
+
+            //cas sud-ouest
             if (n->x < (*a)->xc && n->y < (*a)->yc)
             {
                 insererNoeudArbre(n, &((*a)->so), *a);
@@ -150,6 +154,76 @@ void insererNoeudArbre(Noeud *n, ArbreQuat **a, ArbreQuat *parent){
         }
     }
 }
+
+Noeud *rechercheCreeNoeudArbre(Reseau *R, ArbreQuat **a, ArbreQuat *parent, double x, double y){
+    if ((*a)==NULL){
+        //On doit insérér le noeud x,y dans l'arbre ainsi que dans reseau
+
+        //insertion dans le reseau
+        R->nbNoeuds++;
+        CellNoeud *new = malloc(sizeof(CellNoeud));
+        new->nd = creerNoeud(R->nbNoeuds, x, y);
+        new->suiv = R->noeuds;
+        R->noeuds = new;
+
+        //insertion dans l'arbre
+        insererNoeudArbre(new->nd, a, parent);
+
+        return new->nd;
+    }
+
+    else{
+        if ((*a)->noeud != NULL){
+            if (fabs((*a)->noeud->x - x) < DOUBLE_PRECISION  && fabs((*a)->noeud->y - y) < DOUBLE_PRECISION){
+                //Le noeud existe dans l'arbre et donc dans le réseau, on retourne le noeud
+                return (*a)->noeud;
+            }
+            else{
+                //Le noeud n'existe pas dans l'arbre car on est arrivé a une feuille et le if n'est pas vérifié.
+                //On ajoute au réseau
+                R->nbNoeuds++;
+                CellNoeud *new = malloc(sizeof(CellNoeud));
+                new->nd = creerNoeud(R->nbNoeuds, x, y);
+                new->suiv = R->noeuds;
+                R->noeuds = new;
+
+                //On ajoute dans l'arbre
+                insererNoeudArbre(new->nd, a, parent);
+
+                return new->nd;
+            }
+        }
+        else{
+            //On continue de chercher jusqu'a ce qu'on arrive a une feuille ou place libre
+            //On doit déterminer dans lequel des enfants on doit chercher
+
+            //cas sud-ouest
+            if (x < (*a)->xc && y < (*a)->yc)
+            {
+                return rechercheCreeNoeudArbre(R, &((*a)->so), *a, x, y);
+            }
+
+            //cas sud-est
+            if (x >= (*a)->xc && y < (*a)->yc){
+               return rechercheCreeNoeudArbre(R, &((*a)->se), *a, x, y);
+            }
+
+            //cas nord-ouest
+            if (x < (*a)->xc && y >= (*a)->yc){
+                return rechercheCreeNoeudArbre(R, &((*a)->no), *a, x, y);
+            }
+
+            //cas nord-est
+            if(x >= (*a)->xc && y >= (*a)->yc){
+                return rechercheCreeNoeudArbre(R, &((*a)->ne), *a, x, y);
+            }
+        }
+    }
+
+    //Pour que le compilateur ne fait pas de pb, j'amais verifié
+    return NULL;
+}
+
 
 
 

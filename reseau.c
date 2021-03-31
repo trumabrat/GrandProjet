@@ -131,7 +131,7 @@ Reseau* reconstitueReseauListe(Chaines *C){
 }
 
 
-int nbLiaisons(Reseau *R){ //Mihajlo (c'est bon now, junji)
+int nbLiaisons(Reseau *R){ 
     //compte le nombre de liaisons qui existent dans le Reseau R
     int cnt = 0;
     CellNoeud *tmp = R->noeuds;
@@ -150,7 +150,7 @@ int nbLiaisons(Reseau *R){ //Mihajlo (c'est bon now, junji)
     return (cnt/2);
 }
 
-int nbCommodites(Reseau *R){ //Mihajlo
+int nbCommodites(Reseau *R){ 
     //compte le nombre de commoditées dans le Reseau R
     int cmp = 0;
     CellCommodite *tmp = R->commodites;
