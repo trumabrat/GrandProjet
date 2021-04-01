@@ -21,4 +21,5 @@ extern void insererNoeudArbre(Noeud *n, ArbreQuat **a, ArbreQuat *parent);
 extern Noeud *rechercheCreeNoeudArbre(Reseau *R, ArbreQuat **a, ArbreQuat *parent, double x, double y);
 extern Noeud *lancerRecherche(Reseau *R, ArbreQuat *pere, double x, double y);
 extern Reseau *reconstitueReseauArbre(Chaines *C);
+extern void liberation_arbreQuat(ArbreQuat *a);
 #endif

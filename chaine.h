@@ -35,5 +35,8 @@ double distancePoints(CellPoint* p1, CellPoint* p2);
 double longueurChaine(CellChaine* c);
 double longueurTotale(Chaines *C);
 int comptePointsTotal(Chaines *C);
+extern void liberer_cell_point(CellPoint *cellP);
+extern void liberer_cell_chaine(CellChaine *cellC);
+extern void liberer_chaines(Chaines *C);
 
 #endif	

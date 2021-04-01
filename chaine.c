@@ -183,3 +183,25 @@ int comptePointsTotal(Chaines *C){
     }
     return res;
 }
+
+void liberer_cell_point(CellPoint *cellP){
+    //liberation du cellPoint
+    if (cellP->suiv){
+        liberer_cell_point(cellP->suiv);
+    }
+    free(cellP);
+}
+
+void liberer_cell_chaine(CellChaine *cellC){
+    //liberation du CellChaine
+    if (cellC->suiv){
+        liberer_cell_chaine(cellC->suiv);
+    }
+    liberer_cell_point(cellC->points);
+    free(cellC);
+}
+
+void liberer_chaines(Chaines *C){
+    liberer_cell_chaine(C->chaines);
+    free(C);
+}

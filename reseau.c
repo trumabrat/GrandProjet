@@ -245,3 +245,28 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
     }
     SVGfinalize(&svg);
 }
+
+void liberation_cell_noeud(CellNoeud *noeuds){
+    //liberations des noeuds dans CellNoeuds
+    //on ne s'occupe pas des voisins puisqu'il se trouvent dans les suivants de CellNoeuds aussi
+    if(noeuds->suiv){
+        liberation_cell_noeud(noeuds->suiv);
+    }
+    free(noeuds->nd);
+    free(noeuds);
+}
+
+void liberation_cell_commodite(CellCommodite *cellC){
+    //liberation des commodites, les extremites sont liberes par liberations cell noeuds
+    if (cellC->suiv){
+        liberation_cell_commodite(cellC->suiv);
+    }
+    free(cellC);
+}
+
+void liberation_reseau(Reseau *R){
+    //liberation du reseau
+    liberation_cell_commodite(R->commodites);
+    liberation_cell_noeud(R->noeuds);
+    free(R);
+}
