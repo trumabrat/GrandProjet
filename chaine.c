@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <math.h>
 
+
+// pour creer une instance Chaines a partir d'un fichier
 Chaines* lectureChaines(FILE *f){
 
     Chaines *res = (Chaines *)calloc(1,sizeof(Chaines));
@@ -20,12 +22,18 @@ Chaines* lectureChaines(FILE *f){
     res->nbChaines = nbChaine;
     res->gamma = gamma;
     CellChaine *liste_chaine = NULL;
-    CellChaine *cha = NULL;
+    CellChaine *chaine_cur = NULL;
+    CellPoint *liste_point = NULL;
+    
+    // pour chaque chaine
     for(int j =  0 ;  j < nbChaine ; j++){
-        cha = (CellChaine *)calloc(1, sizeof(CellChaine));
+        chaine_cur = (CellChaine *)calloc(1, sizeof(CellChaine));
+        // on prend le nombre de points
         fscanf(f," %d %d", &num, &nbPoints);
-        cha->numero = num;
-        CellPoint *liste_point = NULL;
+        chaine_cur->numero = num;
+        liste_point = NULL;
+
+        // pour chaque point d'une chaine
         for(int i = 0 ; i < nbPoints; i++){
             CellPoint *point = (CellPoint*)malloc(sizeof(CellPoint));
             fscanf(f,"%lf %lf ", &x, &y);
@@ -34,81 +42,17 @@ Chaines* lectureChaines(FILE *f){
             point->suiv = liste_point;
             liste_point = point;
         }
-        cha->points = liste_point;
-        cha->suiv = liste_chaine;
-        liste_chaine = cha;
+
+        // on passe a suivant
+        chaine_cur->points = liste_point;
+        chaine_cur->suiv = liste_chaine;
+        liste_chaine = chaine_cur;
     }
     
     res->chaines = liste_chaine;
     return res;
 }
 
-// // version recursive pour creer Chaines a partir d'un fichier
-// Chaines* lectureChaines2(FILE* f){
-//     int nbChaine, gamma;
-
-//     // recuperer le nombre de chaines
-//     fscanf(f, " %*s %d", &nbChaine);
-//     if(nbChaine == 0){
-//         printf("Erreur : nbChaine = 0 dans le fichier.");
-//         return NULL;
-//     }
-
-//     // recuperer la valeur de gamma
-//     fscanf(f, " %*s %d", &gamma);
-    
-//     //creer une instance de Chaines
-//     Chaines* res = (Chaines*) calloc(1, sizeof(Chaines));
-//     res->nbChaines = nbChaine;
-//     res->gamma = gamma;
-    
-//     // creer les CellChaine
-//     res->chaines = creerCellChaineRec(nbChaine, f);
-
-//     return res;
-// }
-
-// liberer Chaines d'une maniere recursive
-void libererChaines(Chaines* chaines){
-    libererCellChaineRec(chaines->chaines);
-    free(chaines);
-}
-
-// creer CellPoint d'une maniere recursive
-CellPoint* creerCellPointRec(int nb, FILE* f){
-    if(nb == 0) return NULL;
-    CellPoint* unPoint = (CellPoint*) malloc(sizeof(CellPoint));
-    fscanf(f, " %lf %lf", &(unPoint->x), &(unPoint->y));
-    unPoint->suiv = creerCellPointRec(nb-1, f);
-    return unPoint;
-}
-
-// liberer CellPoint d'une maniere recursive
-void libererCellPointRec(CellPoint* p){
-    if(!p) return;
-    libererCellPointRec(p->suiv);
-    free(p);
-}
-
-// creer CellChaine d'une maniere recursive
-CellChaine* creerCellChaineRec(int nb, FILE* f){
-    if(nb == 0) return NULL;
-    CellChaine* res = (CellChaine*) calloc(1, sizeof(CellChaine));
-    int nbPoints;
-    if(fscanf(f, " %d %d", &(res->numero), &nbPoints) == 2){
-        res->points = creerCellPointRec(nbPoints, f);
-        res->suiv = creerCellChaineRec(nb-1, f);
-    }
-    return res;
-}
-
-// liberer CellChaine d'une maniere recursive
-void libererCellChaineRec(CellChaine* ch){
-    if(!ch) return;
-    libererCellChaineRec(ch->suiv);
-    libererCellPointRec(ch->points);
-    free(ch);
-}
 
 //Cette fonction va ecrire une instance de "Listes de Chaines" sous le format precisé en exercice 1
 void ecrireChaines(Chaines *C,FILE *f){
@@ -217,14 +161,19 @@ double longueurTotale(Chaines *C){
     return res;
 }
 
+// compter le nombre de points apparus dans Chaines, meme s'ils sont presents plusieur fois
 int comptePointsTotal(Chaines *C){
     int res = 0;
     if(C){
         CellChaine* curCellChaine = C->chaines;
         CellPoint* curPoint = NULL;
+
+        // pour chaque CellChaine
         while (curCellChaine)
         {
             curPoint = curCellChaine->points;
+
+            // pour chaque Point
             while(curPoint){
                 res++;
                 curPoint = curPoint->suiv;

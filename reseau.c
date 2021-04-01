@@ -4,6 +4,8 @@
 #include <assert.h>
 #define DOUBLE_PRECISION 0.00001
 
+// recherche d'un Noeud dans un reseau a partir de ses coordonnees
+// si on ne le trouve pas, on le cree
 Noeud* rechercheCreeNoeudListe(Reseau *R, double x, double y){
     int i;
     CellNoeud* cellnoeud = R->noeuds;
@@ -36,6 +38,7 @@ Noeud* creerNoeud(int num, double x, double y){
     return res;
 }
 
+// creer une CellNoeud a partir d'un Noeud et la CellNoeud suivante
 CellNoeud* creerCellNoeud(Noeud* n, CellNoeud* suiv){
     CellNoeud* res = (CellNoeud*) calloc(1, sizeof(CellNoeud));
     res->nd = n;
@@ -44,9 +47,13 @@ CellNoeud* creerCellNoeud(Noeud* n, CellNoeud* suiv){
 }
 
 
-
+// mise a jour les listes des voisins des Noeud prev et next
+// retourne un pointeur vers le Noeud next
 Noeud* ajouterVoisin(Noeud* prev, Noeud* next){
+    // verification
     if(!next) return NULL;
+
+    // si les deux sont deja voisins, on renvoie Noeud next directement
     CellNoeud* tmp = prev->voisins;
     while(tmp){
         if(tmp->nd == next){
@@ -54,15 +61,16 @@ Noeud* ajouterVoisin(Noeud* prev, Noeud* next){
         }
         tmp = tmp->suiv;
     }
+
+    // Sinon, on cree CellNoeud correspondants et tisse les liens
     CellNoeud* cellN = creerCellNoeud(next, prev->voisins);
     prev->voisins = cellN;
-
     next->voisins = creerCellNoeud(prev, next->voisins);
 
     return next;
 }
 
-
+// creer une CellCommodite a partir de son deux Noeud extremite, et CellCommodite suivante
 CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* suiv){
     CellCommodite* res = (CellCommodite*) calloc(1, sizeof(CellCommodite));
     res->extrA = extrA;
@@ -71,8 +79,7 @@ CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* sui
     return res;
 }
 
-
-
+// On reconstruire un Reseau a partir d'une Chaines
 Reseau* reconstitueReseauListe(Chaines *C){
     int i;
     Reseau* reso = (Reseau*) calloc(1, sizeof(Reseau));
@@ -130,9 +137,8 @@ Reseau* reconstitueReseauListe(Chaines *C){
     return reso;
 }
 
-
+//compte le nombre de liaisons qui existent dans le Reseau R
 int nbLiaisons(Reseau *R){ 
-    //compte le nombre de liaisons qui existent dans le Reseau R
     int cnt = 0;
     CellNoeud *tmp = R->noeuds;
     while (tmp)
@@ -142,7 +148,6 @@ int nbLiaisons(Reseau *R){
             cnt++;
             voisins = voisins->suiv;
         }
-
         tmp = tmp->suiv;
     }
 
@@ -150,8 +155,8 @@ int nbLiaisons(Reseau *R){
     return (cnt/2);
 }
 
+//compte le nombre de commoditées dans le Reseau R
 int nbCommodites(Reseau *R){ 
-    //compte le nombre de commoditées dans le Reseau R
     int cmp = 0;
     CellCommodite *tmp = R->commodites;
     while(tmp){
@@ -162,7 +167,9 @@ int nbCommodites(Reseau *R){
     return cmp;
 }
 
+// sauvegarder l'information d'un Reseau dans un fichier
 void ecrireReseau(Reseau *R, FILE *f){
+    // sauvegarde de l'information fondamentale
     fprintf(f, "NbNoeuds: %d\n", R->nbNoeuds);
     fprintf(f, "NbLiaisons: %d\n", nbLiaisons(R));
     fprintf(f, "NbCommodites: %d\n", nbCommodites(R));
@@ -172,6 +179,8 @@ void ecrireReseau(Reseau *R, FILE *f){
     int cpt = 0;// pour securiser le processus
     CellNoeud* cnd = R->noeuds;
     Noeud* nd = NULL;
+
+    // l'enregistrement de l'information des Noeud
     while(cnd){
         assert(cpt<R->nbNoeuds);
         nd = cnd->nd;
@@ -181,6 +190,7 @@ void ecrireReseau(Reseau *R, FILE *f){
     }
     fprintf(f,"\n");
 
+    // l'enregistrement de l'information des liasons
     CellNoeud* cndVoisin = NULL;
     //Pour chaque noeud du reseau
     for (cnd = R->noeuds, cpt = 0; cnd ; cnd = cnd->suiv, cpt++)
@@ -190,7 +200,7 @@ void ecrireReseau(Reseau *R, FILE *f){
 
         // Pour chaque voisin
         while(cndVoisin){
-            if(cndVoisin->nd->num < cnd->nd->num){
+            if(cndVoisin->nd->num < cnd->nd->num){ // pour une liaison n'apparaisse deux fois
                 fprintf(f, "l %d %d\n", cndVoisin->nd->num, cnd->nd->num);
             }
             cndVoisin = cndVoisin->suiv;
@@ -198,7 +208,7 @@ void ecrireReseau(Reseau *R, FILE *f){
     }
     fprintf(f, "\n");
 
-    // Pour chaque commodite
+    // l'enregistrement de l'information des commodite
     CellCommodite* cell_com = R->commodites;
     while (cell_com)
     {

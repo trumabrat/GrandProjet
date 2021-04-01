@@ -15,16 +15,21 @@ int main()
         }
     }
 
+    // lecture et creation d'une instance de Chaines et de Reseau
     FILE* f = NULL;
     f = fopen("00014_burma.cha", "r");
     Chaines *c = lectureChaines(f);
     fclose(f);
     Reseau *R = reconstitueReseauHachage(c, 5);
     FILE* f2 = NULL;
+
+    // l'enregistrement dans un fichier
     f2 = fopen("resHachage.txt", "w");
     ecrireReseau(R, f2);
     fclose(f2);
+
+    // affichage
     afficheReseauSVG(R, "resoHachage");
-    libererChaines(c);
+    
     return 0;
 }

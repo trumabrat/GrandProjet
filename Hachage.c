@@ -6,6 +6,7 @@
 #ifndef DOUBLE_PRECISION
 #define DOUBLE_PRECISION 0.00001
 #endif
+
 // fonction pour generer la clef a partir de x,y
 double fonctionCle(double x, double y){
     return (y+(x+y)*(x+y+1)/2);
@@ -26,35 +27,17 @@ TableHachage* creerTableHachage(int taille){
     return res;
 }
 
-Noeud* rechercheHachageNoeud(TableHachage* H, double x, double y){
-    int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
-    CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
-    Noeud* nd = NULL;
-    while(tmp){
-        nd = tmp->nd;
-        assert(nd); // pour securiser
-        if(fabs(nd->x - x) < DOUBLE_PRECISION && fabs(nd->y - y) < DOUBLE_PRECISION){
-            return nd;
-        }
-        tmp = tmp->suiv;
-    }
-    return NULL;
-}
 
-TableHachage* enregistrerHachage(TableHachage* H, Noeud* n){
-    int indiceCase = fonctionHachage(fonctionCle(n->x, n->y), H->taille);
-    CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
-    CellNoeud* newCN = creerCellNoeud(n, tmp);
-    H->tableHachageNoeud[indiceCase] = newCN;
-    return H;
-}
-
+// recherche d'un Noeud dans un reseau a partir de ses coordonnees et une table de hachage
+// si on ne le trouve pas, on le cree
 Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y){
-    // recherche du noeud
+    // recherche du noeud, on se place dans la liste chainee ou ce Noeud peut etre present
     int indiceCase = fonctionHachage(fonctionCle(x, y), H->taille);
     CellNoeud* tmp = H->tableHachageNoeud[indiceCase];
     CellNoeud* prev = NULL;
     Noeud* nd = NULL;
+
+    // recheche dans cette liste chainee
     while(tmp){
         nd = tmp->nd;
         assert(nd); // pour securiser
@@ -69,20 +52,23 @@ Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y)
     // creation d'un nouveau noeud et ajout dans la table de hachage
     Noeud* newNoeud = creerNoeud(++R->nbNoeuds, x, y);
 
-    if(prev && !tmp){
+    if(prev && !tmp){ // si ce n'est pas une case vide et on se trouve a la derniere cellule
         // prev c'est avant la fin de la table de hachage
+        // insertion a la fin
         prev->suiv = creerCellNoeud(newNoeud, NULL);
-    }else{// c'est une case vide
-        // mettre a jour le table de hachage
+    }else{// si c'est une case vide
+        // insertion en tete
         H->tableHachageNoeud[indiceCase] = creerCellNoeud(newNoeud, H->tableHachageNoeud[indiceCase]);
     }
+
     // ajout dans le reseau
     R->noeuds = creerCellNoeud(newNoeud, R->noeuds);
     return newNoeud;
 }
 
 
-
+// On reconstruire un Reseau a l'aide d'une table de hachage
+// dont la taille est specifiee
 Reseau* reconstitueReseauHachage(Chaines *C, int M){
     int i;
     Reseau* reso = (Reseau*) calloc(1, sizeof(Reseau));
@@ -98,7 +84,7 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
     Noeud* noeudTete = NULL;
     CellCommodite* commoditeTmp = NULL;
 
-    // On parcourt une `a une chaque cha^ıne:
+    // On parcourt une a une chaque chaıne:
     for ( i = 0; i < C->nbChaines; i++, chaineTmp = chaineTmp->suiv)
     {
         // si Chaines est bien construit, les deux assert ne pose pas de probleme
@@ -132,7 +118,9 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
         assert(noeudTete && noeudTmp);
         commoditeTmp = creerCellCommodite(noeudTete, noeudTmp, commoditeTmp);
     }
+
     // si chaineTmp == NULL, on a mal compte le nombre de chaines
+    // securisation
     assert(!chaineTmp);
 
     reso->commodites = commoditeTmp;
