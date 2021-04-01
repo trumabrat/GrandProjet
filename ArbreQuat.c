@@ -228,15 +228,38 @@ Noeud *rechercheCreeNoeudArbre(Reseau *R, ArbreQuat **a, ArbreQuat *parent, doub
     return NULL;
 }
 
+Noeud *lancerRecherche(Reseau *R, ArbreQuat *pere, double x, double y){
+    //On va utiliser cette fonction pour trouver ou faut t'il continuer de cherche à partir de la racine du tout debut
+
+    //cas sud-ouest
+    if (x < pere->xc && y < pere->yc)
+    {
+        return rechercheCreeNoeudArbre(R, &(pere->so), pere, x, y);
+    }
+
+    //cas sud-est
+    if (x >= pere->xc && y < pere->yc){
+        return rechercheCreeNoeudArbre(R, &(pere->se), pere, x, y);
+    }
+
+    //cas nord-ouest
+    if (x < pere->xc && y >= pere->yc){
+        return rechercheCreeNoeudArbre(R, &(pere->no), pere, x, y);
+    }
+
+    //cas nord-est
+    if(x >= pere->xc && y >= pere->yc){
+        return rechercheCreeNoeudArbre(R, &(pere->ne), pere, x, y);
+    }
+
+}
+
 Reseau *reconstitueReseauArbre(Chaines *C){
 
     //Determiner et creer la racine 
     double xmin, ymin, xmax, ymax;
     chaineCoordMinMax(C, &xmin, &ymin, &xmax, &ymax);
     ArbreQuat *pere = creerArbreQuat(xmin + (xmax - xmin) / 2.0, ymin + (ymax - ymin) / 2.0, xmax - xmin, ymax - ymin);
-
-    //L'arbre
-    ArbreQuat *a = NULL;
 
     //Creation du reseau
     Reseau *R = (Reseau*) calloc(1, sizeof(Reseau));
@@ -255,7 +278,7 @@ Reseau *reconstitueReseauArbre(Chaines *C){
         Noeud *extremite2 = NULL;
 
         //Pour le premier noeud de l'arbre:
-        extremite1 = rechercheCreeNoeudArbre(R, &a, pere, tmpPoints->x, tmpPoints->y);
+        extremite1 = lancerRecherche(R, pere, tmpPoints->x, tmpPoints->y);
         tmpPoints = tmpPoints->suiv;
 
         //On stocke le noeud d'avant pour ajouter les ajouter comme voisins
@@ -267,12 +290,12 @@ Reseau *reconstitueReseauArbre(Chaines *C){
             if (tmpPoints->suiv == NULL)
             {
                 //On sauvegarde le dernier point car ca represente la deuxieme extremite de la commodité
-                extremite2 = rechercheCreeNoeudArbre(R, &a, pere, tmpPoints->x, tmpPoints->y);
+                extremite2 = lancerRecherche(R, pere, tmpPoints->x, tmpPoints->y);
                 n = extremite2;
             }
             else{
                 //Ici on est dans les points du milieu
-                n = rechercheCreeNoeudArbre(R, &a, pere, tmpPoints->x, tmpPoints->y);
+                n = lancerRecherche(R, pere, tmpPoints->x, tmpPoints->y);
             }
 
             //On ajoute les points dans les voisins les uns des autres, puis on change prev

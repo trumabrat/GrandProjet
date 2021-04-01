@@ -15,8 +15,10 @@ int main(int argc, char const *argv[])
     Reseau *R = reconstitueReseauArbre(C);
     FILE *f2 = fopen("resArbre.txt", "w");
     ecrireReseau(R, f2);
+    afficheReseauSVG(R, "affichage_arbre");
 
     libererChaines(C);
     fclose(f);
+    fclose(f2);
     return 0;
 }
