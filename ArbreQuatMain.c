@@ -13,8 +13,8 @@ int main(int argc, char const *argv[])
     ecrireReseau(R, f2);
     afficheReseauSVG(R, "affichage_arbre");
 
-    // liberer_chaines(C);
-    // liberation_reseau(R);
+    liberer_chaines(C);
+    liberation_reseau(R);
     fclose(f);
     fclose(f2);
     return 0;
