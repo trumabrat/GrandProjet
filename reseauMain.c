@@ -7,7 +7,7 @@ int main()
     FILE* f = NULL;
     f = fopen("00014_burma.cha", "r");
     Chaines *c = lectureChaines(f);
-    fclose(f);
+    
     Reseau *R = reconstitueReseauListe(c);
     
     // affichage et l'enregistrement
@@ -15,8 +15,14 @@ int main()
     FILE* f2 = NULL;
     f2 = fopen("res.txt", "w");
     ecrireReseau(R, f2);
-    fclose(f2);
+    
     afficheReseauSVG(R, "reso");
+
+    //fermeture et liberation
+    liberation_reseau(R);
+    liberer_chaines(c);
+    fclose(f);
+    fclose(f2);
     
     return 0;
 }

@@ -16,7 +16,8 @@ int main()
     afficheChainesSVG(c, "chaine2");
     printf("LongueurTotal = %lf, nombre de points = %d\n", longueurTotale(c), comptePointsTotal(c));
 
-    // fermeture des fichiers
+    // fermeture des fichiers et liberation
+    liberer_chaines(c);
     fclose(f);
     fclose(f2);
     return 0;
