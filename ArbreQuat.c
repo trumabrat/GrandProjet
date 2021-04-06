@@ -314,6 +314,7 @@ Reseau *reconstitueReseauArbre(Chaines *C){
         tmpChaines = tmpChaines->suiv;
     }
     //liberation de l'arbre avec la fonction d'en dessous ne marche pas, a verifier
+    liberation_arbreQuat(pere);
 
     return R;
 }
@@ -322,21 +323,24 @@ void liberation_arbreQuat(ArbreQuat *a){
     //!Fonction casse le programme, a verifier
     //liberation de memoire de l'arbre
     //on ne vas pas libérer les noeuds puisqu'ils appartient probablement a un reseau, donc on peut les liberer en liberant le reseau
-    if(a->se){
-        liberation_arbreQuat(a->se);
-    }
+    if(a){
+        if(a->se){
+            liberation_arbreQuat(a->se);
+        }
 
-    if(a->so){
-        liberation_arbreQuat(a->so);
-    }
+        if(a->so){
+            liberation_arbreQuat(a->so);
+        }
 
-    if(a->se){
-        liberation_arbreQuat(a->ne);
-    }
+        if(a->se){
+            liberation_arbreQuat(a->ne);
+        }
 
-    if(a->se){
-        liberation_arbreQuat(a->no);
-    }
+        if(a->se){
+            liberation_arbreQuat(a->no);
+        }
 
-    free(a);
+    
+        free(a);
+    }
 }
