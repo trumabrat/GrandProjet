@@ -246,12 +246,22 @@ void afficheReseauSVG(Reseau *R, char* nomInstance){
     SVGfinalize(&svg);
 }
 
+void liberation_chaine_CellNoeud(CellNoeud *Cells){
+    CellNoeud* tmp = NULL;
+    while(Cells){
+        tmp = Cells;
+        Cells = Cells->suiv;
+        free(tmp);
+    }
+}
+
 void liberation_cell_noeud(CellNoeud *noeuds){
     //liberations des noeuds dans CellNoeuds
     //on ne s'occupe pas des voisins puisqu'il se trouvent dans les suivants de CellNoeuds aussi
     if(noeuds->suiv){
         liberation_cell_noeud(noeuds->suiv);
     }
+    liberation_chaine_CellNoeud(noeuds->nd->voisins);
     free(noeuds->nd);
     free(noeuds);
 }

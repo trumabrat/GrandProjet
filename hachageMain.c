@@ -23,7 +23,7 @@ int main()
     Reseau *R = reconstitueReseauHachage(c, 5);
     FILE* f2 = NULL;
 
-    // l'enregistrement dans un fichier
+    // // l'enregistrement dans un fichier
     f2 = fopen("resHachage.txt", "w");
     ecrireReseau(R, f2);
     fclose(f2);

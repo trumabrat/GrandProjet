@@ -136,12 +136,8 @@ void liberer_tableHachage(TableHachage* H){
 
     for (int i = 0; i < H->taille; i++)
     {
-        cur = H->tableHachageNoeud[i];
-        if(cur){
-            tmp = cur;
-            cur = cur->suiv;
-            free(tmp);
-        }
+        liberation_chaine_CellNoeud(H->tableHachageNoeud[i]);
     }
+    free(H->tableHachageNoeud);
     free(H);
 }

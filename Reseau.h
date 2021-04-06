@@ -44,6 +44,7 @@ Noeud* creerNoeud(int num, double x, double y);
 CellNoeud* creerCellNoeud(Noeud* n, CellNoeud* suiv);
 Noeud* ajouterVoisin(Noeud* prev, Noeud* next);
 CellCommodite* creerCellCommodite(Noeud* extrA, Noeud* extrB, CellCommodite* suiv);
+void liberation_chaine_CellNoeud(CellNoeud *voisin);
 void liberation_cell_noeud(CellNoeud *noeuds);
 void liberation_cell_commodite(CellCommodite *cellC);
 void liberation_reseau(Reseau *R);
