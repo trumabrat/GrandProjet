@@ -315,6 +315,7 @@ Reseau *reconstitueReseauArbre(Chaines *C){
     }
     //liberation de l'arbre avec la fonction d'en dessous ne marche pas, a verifier
     liberation_arbreQuat(pere);
+    //Commentaire
 
     return R;
 }
