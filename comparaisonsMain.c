@@ -12,7 +12,7 @@ int main()
     // construction du reseau, hachage et arbre
     // avec calcul du temps, et son ecriture dans un fichier
     clock_t start, end;
-    FILE* f = NULL;
+    FILE* f2 = NULL;
     start = clock();
     Reseau *L = reconstitueReseauListe(c);
     end = clock();
