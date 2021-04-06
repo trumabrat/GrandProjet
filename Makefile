@@ -7,6 +7,9 @@ PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o hachageMain.o comparaisons
 
 all: $(PROGRAMS)
 
+comparaisonsMain.o : comparaisonsMain.c comparaisons.o chaine.o reseau.o Hachage.o ArbreQuat.o SVGwriter.o
+	$(CC) -o $@ $(CFLAGS) $^ -lm
+
 chaineMain.o: chaineMain.c chaine.o SVGwriter.o
 	$(CC) -o chaineMain.o $(CFLAGS) chaineMain.c chaine.o SVGwriter.o -lm
 
@@ -33,9 +36,6 @@ hachageMain.o : Hachage.o reseau.o SVGwriter.o chaine.o hachageMain.c
 
 comparaisons.o : comparaisons.c
 	$(CC) -c $(CFLAGS) $^ -lm
-
-comparaisonsMain.o : comparaisonsMain.c comparaisons.o SVGwriter.o
-	$(CC) -o $@ $(CFLAGS) $^ -lm
 
 SVGwriter.o: SVGwriter.c SVGwriter.h
 	$(CC) -c $(CFLAGS) SVGwriter.c
