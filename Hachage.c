@@ -122,7 +122,26 @@ Reseau* reconstitueReseauHachage(Chaines *C, int M){
     // si chaineTmp == NULL, on a mal compte le nombre de chaines
     // securisation
     assert(!chaineTmp);
-
     reso->commodites = commoditeTmp;
+    liberer_tableHachage(H);
     return reso;
+}
+
+// liberer une table de hachage (CellNoeud, TableHachage)
+// sans toucher autres contenus
+void liberer_tableHachage(TableHachage* H){
+    if(!H)return;
+    CellNoeud* cur = NULL;
+    CellNoeud* tmp = NULL;
+
+    for (int i = 0; i < H->taille; i++)
+    {
+        cur = H->tableHachageNoeud[i];
+        if(cur){
+            tmp = cur;
+            cur = cur->suiv;
+            free(tmp);
+        }
+    }
+    free(H);
 }

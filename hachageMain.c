@@ -30,6 +30,9 @@ int main()
 
     // affichage
     afficheReseauSVG(R, "resoHachage");
-    
+
+    // liberation de memoire
+    liberer_chaines(c);
+    liberation_reseau(R);
     return 0;
 }
