@@ -194,6 +194,7 @@ void liberer_cell_point(CellPoint *cellP){
 
 void liberer_cell_chaine(CellChaine *cellC){
     //liberation du CellChaine
+    if(!cellC) return;
     if (cellC->suiv){
         liberer_cell_chaine(cellC->suiv);
     }

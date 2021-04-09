@@ -8,7 +8,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/ArbreQuatMain.o",
+      "program": "${workspaceFolder}/comparaisonsMain.o",
       "args": [],
       "preLaunchTask": "myTask",
       "stopAtEntry": false,

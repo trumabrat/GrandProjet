@@ -258,6 +258,7 @@ void liberation_chaine_CellNoeud(CellNoeud *Cells){
 void liberation_cell_noeud(CellNoeud *noeuds){
     //liberations des noeuds dans CellNoeuds
     //on ne s'occupe pas des voisins puisqu'il se trouvent dans les suivants de CellNoeuds aussi
+    if(!noeuds) return;
     if(noeuds->suiv){
         liberation_cell_noeud(noeuds->suiv);
     }
@@ -267,6 +268,7 @@ void liberation_cell_noeud(CellNoeud *noeuds){
 }
 
 void liberation_cell_commodite(CellCommodite *cellC){
+    if(!cellC) return;
     //liberation des commodites, les extremites sont liberes par liberations cell noeuds
     if (cellC->suiv){
         liberation_cell_commodite(cellC->suiv);

@@ -332,11 +332,11 @@ void liberation_arbreQuat(ArbreQuat *a){
             liberation_arbreQuat(a->so);
         }
 
-        if(a->se){
+        if(a->ne){
             liberation_arbreQuat(a->ne);
         }
 
-        if(a->se){
+        if(a->no){
             liberation_arbreQuat(a->no);
         }
 
