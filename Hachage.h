@@ -6,8 +6,8 @@ typedef struct _tablehachage{
     CellNoeud** tableHachageNoeud;
 } TableHachage;
 
-double fonctionCle(double x, double y);
-int fonctionHachage(double k, int nbCase);
+long double fonctionCle(double x, double y);
+int fonctionHachage(long double k, int nbCase);
 TableHachage* creerTableHachage(int taille);
 Noeud* rechercheCreeNoeudHachage(Reseau *R, TableHachage* H, double x, double y);
 Reseau* reconstitueReseauHachage(Chaines *C, int M);

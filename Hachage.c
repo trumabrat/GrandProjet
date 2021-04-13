@@ -8,13 +8,14 @@
 #endif
 
 // fonction pour generer la clef a partir de x,y
-double fonctionCle(double x, double y){
-    return (y+(x+y)*(x+y+1)/2);
+long double fonctionCle(double x, double y){
+    long double res = (y+(x+y)*(x+y+1)/2);
+    return  res;
 }
 
 // cela nous semble approprie car il y a peu de collision.
-int fonctionHachage(double k, int nbCase){
-    return (int) (nbCase*(k*NBDOR - (int)(k*NBDOR)));
+int fonctionHachage(long double k, int nbCase){
+    return (int) (nbCase*(k*NBDOR - (long int)(k*NBDOR)));
 }
 
 // creer table de hachage

@@ -8,7 +8,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/comparaisonsMain.o",
+      "program": "${workspaceFolder}/troisInstancesMain.o",
       "args": [],
       "preLaunchTask": "myTask",
       "stopAtEntry": false,
