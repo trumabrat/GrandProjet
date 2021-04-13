@@ -1,1 +1,1 @@
-temps de calcusls: 0.000008
+temps de calcusls: 0.000007
