@@ -1,13 +1,16 @@
 CFLAGS = -g -Wall -Wextra -pedantic
 CC = gcc
 
-PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o hachageMain.o comparaisonsMain.o
+PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o hachageMain.o comparaisonsMain.o troisInstancesMain.o
 
 .PHONY:	all clean
 
 all: $(PROGRAMS)
 
 comparaisonsMain.o : comparaisonsMain.c comparaisons.o chaine.o reseau.o Hachage.o ArbreQuat.o SVGwriter.o
+	$(CC) -o $@ $(CFLAGS) $^ -lm
+
+troisInstancesMain.o : troisInstancesMain.c comparaisons.o chaine.o reseau.o Hachage.o ArbreQuat.o SVGwriter.o
 	$(CC) -o $@ $(CFLAGS) $^ -lm
 
 chaineMain.o: chaineMain.c chaine.o SVGwriter.o
