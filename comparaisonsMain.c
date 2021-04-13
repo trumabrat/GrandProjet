@@ -64,7 +64,7 @@ int main()
     f7 = fopen("compArbreQuat.txt", "w");
     
 
-    for (int nbChaines = 50; nbChaines <= 500; nbChaines+= 50)
+    for (int nbChaines = 500; nbChaines <= 5000; nbChaines += 500)
     {
         // generation de Chaines
         c = generationAleatoire(nbChaines, nbPointsChaine, xmax, ymax);
@@ -75,7 +75,7 @@ int main()
         debut = clock();
         tmp = reconstitueReseauListe(c);
         fin = clock();
-        temps_calcul = (double) ((fin-debut)/CLOCKS_PER_SEC);
+        temps_calcul = (double) ((fin-debut)*1.0/CLOCKS_PER_SEC);
         fprintf(f3, "%d %lf\n", nbChaines*nbPointsChaine, temps_calcul);
         liberation_reseau(tmp);
 
@@ -85,7 +85,7 @@ int main()
         debut = clock();
         tmp = reconstitueReseauHachage(c, taille_tab_hachage[0]);
         fin = clock();
-        temps_calcul = (double) ((fin-debut)/CLOCKS_PER_SEC);
+        temps_calcul = (double) ((fin-debut)*1.0/CLOCKS_PER_SEC);
         fprintf(f4, "%d %lf\n", nbChaines*nbPointsChaine, temps_calcul);
         liberation_reseau(tmp);
 
@@ -95,7 +95,7 @@ int main()
         debut = clock();
         tmp = reconstitueReseauHachage(c, taille_tab_hachage[1]);
         fin = clock();
-        temps_calcul = (double) ((fin-debut)/CLOCKS_PER_SEC);
+        temps_calcul = (double) ((fin-debut)*1.0/CLOCKS_PER_SEC);
         fprintf(f5, "%d %lf\n", nbChaines*nbPointsChaine, temps_calcul);
         liberation_reseau(tmp);
 
@@ -105,7 +105,7 @@ int main()
         debut = clock();
         tmp = reconstitueReseauHachage(c, taille_tab_hachage[0]);
         fin = clock();
-        temps_calcul = (double) ((fin-debut)/CLOCKS_PER_SEC);
+        temps_calcul = (double) ((fin-debut)*1.0/CLOCKS_PER_SEC);
         fprintf(f6, "%d %lf\n", nbChaines*nbPointsChaine, temps_calcul);
         liberation_reseau(tmp);
 
@@ -115,7 +115,7 @@ int main()
         debut = clock();
         tmp = reconstitueReseauArbre(c);
         fin = clock();
-        temps_calcul = (double) ((fin-debut)/CLOCKS_PER_SEC);
+        temps_calcul = (double) ((fin-debut)*1.0/CLOCKS_PER_SEC);
         fprintf(f7, "%d %lf\n", nbChaines*nbPointsChaine, temps_calcul);
         liberation_reseau(tmp);
 
