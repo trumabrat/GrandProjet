@@ -32,6 +32,8 @@ typedef struct {
 } Graphe ;
 
 extern Graphe *creerGraphe(Reseau *R);
+extern void liberation_graph(Graphe* g);
+extern int plus_petit_chemin(Graphe* g, int u, int v);
 extern int reorganiserReseau(Reseau *R);
 
 #endif

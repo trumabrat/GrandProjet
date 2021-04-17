@@ -27,5 +27,7 @@ void enfile(S_file * f, int donnee);
 /* PREREQUIS: la file ne doit pas etre vide */
 int defile(S_file *f);
 
+/* Liberation */ 
+void liberer_file(S_file* file);
 
 #endif 

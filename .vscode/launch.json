@@ -8,7 +8,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/troisInstancesMain.o",
+      "program": "${workspaceFolder}/grapheMain.o",
       "args": [],
       "preLaunchTask": "myTask",
       "stopAtEntry": false,

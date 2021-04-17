@@ -1,11 +1,14 @@
 CFLAGS = -g -Wall -Wextra -pedantic
 CC = gcc
 
-PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o hachageMain.o comparaisonsMain.o troisInstancesMain.o
+PROGRAMS =  chaineMain.o reseauMain.o ArbreQuatMain.o hachageMain.o comparaisonsMain.o troisInstancesMain.o grapheMain.o
 
 .PHONY:	all clean
 
 all: $(PROGRAMS)
+
+grapheMain.o : grapheMain.c Graphe.o chaine.o reseau.o SVGwriter.o ArbreQuat.o Struct_File.o Struct_Liste.o 
+	$(CC) -o $@ $(CFLAGS) $^ -lm
 
 comparaisonsMain.o : comparaisonsMain.c comparaisons.o chaine.o reseau.o Hachage.o ArbreQuat.o SVGwriter.o
 	$(CC) -o $@ $(CFLAGS) $^ -lm
@@ -39,6 +42,15 @@ hachageMain.o : Hachage.o reseau.o SVGwriter.o chaine.o hachageMain.c
 
 comparaisons.o : comparaisons.c
 	$(CC) -c $(CFLAGS) $^ -lm
+
+Graphe.o : Graphe.c
+	$(CC) -c $(CFLAGS) $^
+
+Struct_File.o : Struct_File.c
+	$(CC) -c $(CFLAGS) $^
+
+Struct_Liste.o : Struct_Liste.c
+	$(CC) -c $(CFLAGS) $^
 
 SVGwriter.o: SVGwriter.c SVGwriter.h
 	$(CC) -c $(CFLAGS) SVGwriter.c

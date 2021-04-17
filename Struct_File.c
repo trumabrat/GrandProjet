@@ -33,3 +33,10 @@ int defile(S_file *f){
   return v;
 
 }
+
+void liberer_file(S_file* file){
+  while(!estFileVide(file)){
+    defile(file);
+  }
+  free(file);
+}
