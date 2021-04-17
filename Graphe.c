@@ -38,8 +38,8 @@ Graphe *creerGraphe(Reseau *R){
                 tmpCellArr->a = calloc(1, sizeof(Arete));
 
                 //attributions des valeures
-                tmpCellArr->a->u = tmp_CellNoeud->nd->num;
-                tmpCellArr->a->v = tmp_voisins->nd->num;
+                tmpCellArr->a->u = tmp_CellNoeud->nd->num-1;
+                tmpCellArr->a->v = tmp_voisins->nd->num-1;
 
                 //ajout en tete de L_voisins de la nouvelle Cellule_arete
                 G->T_som[tmp_CellNoeud->nd->num - 1]->L_voisin = tmpCellArr;
@@ -120,7 +120,7 @@ int plus_petit_chemin(Graphe* g, int u, int v){
     assert(u < g->nbsom && v <g->nbsom);
     if(u == v) return 0;
 
-    int sommet_en_cours, sommet_prochain, a_enfiler, cptDistance = 0;
+    int sommet_en_cours, sommet_prochain, a_enfiler;
     Cellule_arete* cell_arete;
 
     // on cree une table pour memoriser les sommet visite

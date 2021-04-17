@@ -10,15 +10,14 @@ int main()
     Graphe* g = creerGraphe(r);
     fclose(f);
 
-    // for (int i = 0; i < g->nbsom; i++)
-    // {
-    //     for (int j = 0; j < g->nbsom; j++)
-    //     {
-    //         printf("%d\n", plus_petit_chemin(g, i, j));
-    //     }
+    for (int i = 0; i < g->nbsom; i++)
+    {
+        for (int j = 0; j < g->nbsom; j++)
+        {
+            printf("%d\n", plus_petit_chemin(g, i, j));
+        }
         
-    // }
-    printf("%d\n", plus_petit_chemin(g, 10, 1));
+    }
     
     
     liberer_chaines(c);
