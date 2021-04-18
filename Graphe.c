@@ -1,5 +1,6 @@
 #include "Graphe.h"
 #include "Struct_File.h"
+#include "Struct_Liste.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
@@ -109,6 +110,9 @@ void liberation_graph(Graphe* g){
     free(g);
 }
 
+typedef enum _etat_visite_ {non_visite, ouvert, ferme} etat_visite;
+
+// Q7.2
 // on cheche le longeur du chemin le plus court entre les sommets u et v
 int plus_petit_chemin(Graphe* g, int u, int v){
     // Dans chaque iteration, on prend le sommet a la tete de la file
@@ -120,22 +124,112 @@ int plus_petit_chemin(Graphe* g, int u, int v){
     assert(u < g->nbsom && v <g->nbsom);
     if(u == v) return 0;
 
-    int sommet_en_cours, sommet_prochain, a_enfiler;
+    int sommet_en_cours, a_enfiler;
     Cellule_arete* cell_arete;
-
-    // on cree une table pour memoriser les sommet visite
-    int visite[g->nbsom];
-    for (int i = 0; i < g->nbsom; i++)
-    {
-        visite[i] = 0;
-    }
-    visite[u] = 1;
 
     // on cree une autre table pour stocker les distances entre u et les sommets
     int distance[g->nbsom];
     for (int i = 0; i < g->nbsom; i++)
     {
         distance[i] = 0;
+    }
+
+    // // on cree une autre table pour stocker l'etat de visite
+    // // un sommet peut etre 
+    // //  non visite
+    // //  ouvert (certains de ses descendant ne sont pas encore visites) 
+    // //  ferme (tous ses descendant sont visites)
+    // etat_visite visite[g->nbsom];
+    // for (int i = 0; i < g->nbsom; i++)
+    // {
+    //     visite[i] = non_visite;
+    // }
+    // visite[u] = ouvert;
+    
+    // on cree un file pour les sommets a visiter
+    S_file* file = calloc(1, sizeof(S_file));
+    Init_file(file);
+    enfile(file, u);
+
+    // on fait un parcourt en largeur jusqu'a ce qu'on rencontre le sommet v
+    while(distance[v] == 0){
+
+        // si on a pas visite le sommet v et la file est deja vide
+        // c'est parce que u et v n'est pas connexe
+        if(estFileVide(file)){
+            liberer_file(file);
+            return -1;
+        }
+
+        // on prend la tete de la file et parcourt sa liste de voisins
+        // et enfile les sommets prochains
+        sommet_en_cours = defile(file);
+        cell_arete = g->T_som[sommet_en_cours]->L_voisin;
+        while(cell_arete){
+            
+            // on teste le numero de sommet a enfiler
+            // a_enfiler = cell_arete->a->u == sommet_en_cours ? v : u;
+            if(cell_arete->a->u == sommet_en_cours) 
+                 a_enfiler = cell_arete->a->v;
+            else a_enfiler = cell_arete->a->u;
+            
+            // si deja visite, on ne prend pas, sinon on le prend et note sa distance
+            if(distance[a_enfiler] == 0){
+                enfile(file, a_enfiler);
+
+                // Si on a note deja une distance plus petite, on la garde
+                //   sinon on note la distance
+                if(distance[a_enfiler] == 0 || (distance[sommet_en_cours]+1 < distance[a_enfiler])){
+                    distance[a_enfiler] = distance[sommet_en_cours]+1;
+                }
+            }
+            cell_arete = cell_arete->suiv;
+        }
+    }
+    liberer_file(file);
+
+    return distance[v];
+}
+
+// Q7.3
+// on cheche le longeur du chemin le plus court entre les sommets u et v
+ListeEntier chaine_arborescence(Graphe* g, int u, int v){
+    // Dans chaque iteration, on prend le sommet a la tete de la file
+    // et enfile les sommets adjacent mais non visite
+    // on continue cette boucle jusqu'a ce qu'on touche le sommet v
+
+    // securisation
+    assert(g);
+    assert(u < g->nbsom && v < g->nbsom);
+    if(u == v) return 0;
+
+    int sommet_en_cours, a_enfiler;
+    Cellule_arete* cell_arete;
+
+    // on cree une table pour l'arborescence
+    // qui stocke le sommet pere de chaque sommet
+    int pere[g->nbsom];
+    for (int i = 0; i < g->nbsom; i++)
+    {
+        pere[i] = -1;
+    }
+
+    // on cree une autre table pour stocker les distances entre u et les sommets
+    int distance[g->nbsom];
+    for (int i = 0; i < g->nbsom; i++)
+    {
+        distance[i] = g->nbsom + 1;
+    }
+
+    // on cree une autre table pour stocker l'etat de visite
+    // un sommet peut etre 
+    //  non visite
+    //  ouvert (certains de ses descendant ne sont pas encore visites) 
+    //  ferme (tous ses descendant sont visites)
+    etat_visite visite[g->nbsom];
+    for (int i = 0; i < g->nbsom; i++)
+    {
+        visite[i] = non_visite;
     }
     
     // on cree un file pour les sommets a visiter
@@ -144,10 +238,7 @@ int plus_petit_chemin(Graphe* g, int u, int v){
     enfile(file, u);
 
     // on fait un parcourt en largeur jusqu'a ce que la file est vide
-    while(visite[v] != 1){
-        // si on a pas visite le sommet v et la file est deja vide
-        // c'est parce que u et v n'est pas connexe
-        if(estFileVide(file)) return -1;
+    while(!estFileVide(file)){
 
         // on prend la tete de la file et parcourt sa liste de voisins
         // et enfile les sommets prochains
@@ -161,17 +252,40 @@ int plus_petit_chemin(Graphe* g, int u, int v){
             else a_enfiler = cell_arete->a->u;
             
             // si deja visite, on ne prend pas, sinon on le prend et note sa distance
-            if(visite[a_enfiler] == 0){
+            if(visite[a_enfiler] == non_visite){
+                visite[a_enfiler] = ouvert;
+                distance[a_enfiler] = distance[sommet_en_cours]+1;
+                pere[a_enfiler] = sommet_en_cours;
                 enfile(file, a_enfiler);
-                if(distance[a_enfiler] == 0 || (distance[sommet_en_cours]+1 < distance[a_enfiler])){
-                    distance[a_enfiler] = distance[sommet_en_cours]+1;
-                }
             }
             cell_arete = cell_arete->suiv;
         }
-        visite[sommet_en_cours] = 1;
+        visite[sommet_en_cours] = ferme;
     }
+
+    // creation et initialisation d'une liste a renvoyer
+    ListeEntier chaine_parcourt;
+    Init_Liste(&chaine_parcourt);
+    
+    // le cas ou sommets u et v ne sont pas connexe
+    if(pere[v] == -1){
+        liberer_file(file);
+        return chaine_parcourt;
+    }
+
+    // traitement pour la liste de parcourt
+    // on trouve le pere successivement a partir de v, jusqu'a u
+    // ensuite on le stoke dans la liste (il y a une renversement)
+    
+    sommet_en_cours = v;
+    while(sommet_en_cours != u){
+        ajoute_en_tete(&chaine_parcourt, sommet_en_cours);
+        sommet_en_cours = pere[sommet_en_cours];
+    }
+    ajoute_en_tete(&chaine_parcourt, sommet_en_cours); // on ajoute u
+
+    // liberer memoire
     liberer_file(file);
 
-    return distance[v];
+    return chaine_parcourt;
 }

@@ -22,5 +22,8 @@ void ajoute_en_tete(ListeEntier* L, int u);
 /* Vide et desalloue une liste */
 void desalloue(ListeEntier *L);
 
+/* Affichage */
+void afficher_liste_entier(ListeEntier* L); 
+
 
 #endif 

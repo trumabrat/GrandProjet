@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "Reseau.h"
+#include "Struct_Liste.h"
 
 typedef struct {
     int u , v ; /* Numeros des sommets extremite */
@@ -34,6 +35,7 @@ typedef struct {
 extern Graphe *creerGraphe(Reseau *R);
 extern void liberation_graph(Graphe* g);
 extern int plus_petit_chemin(Graphe* g, int u, int v);
+extern ListeEntier chaine_arborescence(Graphe* g, int u, int v);
 extern int reorganiserReseau(Reseau *R);
 
 #endif

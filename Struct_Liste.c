@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<stdio.h>
 #include"Struct_Liste.h"
 
 void Init_Liste(ListeEntier *L){
@@ -27,4 +28,15 @@ void desalloue(ListeEntier *L){
     free(prec);
   }
   *L=NULL;
+}
+
+void afficher_liste_entier(ListeEntier* L){
+  if(!L) printf("L est null!\n");
+  ListeEntier tmp = *L;
+  printf("[");
+  while(tmp){
+    printf("%d, ", tmp->u);
+    tmp = tmp->suiv;
+  }
+  printf("]\n");
 }
