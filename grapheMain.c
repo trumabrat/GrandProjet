@@ -5,26 +5,25 @@
 
 int main()
 {
-    FILE* f = fopen("test.cha", "r");
+    // creation du graphe
+    // voici les graphes a choisir
+
+    FILE* f = fopen("00014_burma.cha", "r");
+    // FILE* f = fopen("05000_USA-road-d-NY.cha", "r");
+    // FILE* f = fopen("07397_pla.cha", "r");
+    // FILE* f = fopen("test.cha", "r");
     Chaines* c = lectureChaines(f);
     Reseau* r = reconstitueReseauArbre(c);
     Graphe* g = creerGraphe(r);
     fclose(f);
-    printf("nb noeuds: %d\n", r->nbNoeuds);
-    for (int i = 0; i < g->nbsom; i++)
-    {
-        for (int j = 0; j < g->nbsom; j++)
-        {
-            // printf("(%d, %d) : %d\t", i, j, plus_petit_chemin(g, i, j));
-            // assert(plus_petit_chemin(g,i,j) == plus_petit_chemin(g,j,i));
-        }
-        putchar('\n');
-    }
-    afficheChainesSVG(c, "testMyinstance");
-    ListeEntier parcourt = chaine_arborescence(g, 0, 5);
-    afficher_liste_entier(&parcourt);
-    desalloue(&parcourt);
     
+    if(reorganiserReseau(r)) {
+        printf("ok!\n");
+    }
+    // Q7.5
+    // 
+
+    // liberation de memoire
     liberer_chaines(c);
     liberation_reseau(r);
     liberation_graph(g);

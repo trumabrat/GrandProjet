@@ -39,8 +39,8 @@ Graphe *creerGraphe(Reseau *R){
                 tmpCellArr->a = calloc(1, sizeof(Arete));
 
                 //attributions des valeures
-                tmpCellArr->a->u = tmp_CellNoeud->nd->num-1;
-                tmpCellArr->a->v = tmp_voisins->nd->num-1;
+                tmpCellArr->a->u = tmp_CellNoeud->nd->num;
+                tmpCellArr->a->v = tmp_voisins->nd->num;
 
                 //ajout en tete de L_voisins de la nouvelle Cellule_arete
                 G->T_som[tmp_CellNoeud->nd->num - 1]->L_voisin = tmpCellArr;
@@ -71,7 +71,7 @@ Graphe *creerGraphe(Reseau *R){
         commod_cmp++;
         tmp_CellCommodite = tmp_CellCommodite->suiv;
     }
-    assert(commod_cmp == G->nbcommod);
+    assert(commod_cmp == G->nbcommod); // securisation
     return G;
 }
 
@@ -121,7 +121,7 @@ int plus_petit_chemin(Graphe* g, int u, int v){
 
     // securisation
     assert(g);
-    assert(u < g->nbsom && v <g->nbsom);
+    assert(u <= g->nbsom && v <= g->nbsom);
     if(u == v) return 0;
 
     int sommet_en_cours, a_enfiler;
@@ -133,18 +133,6 @@ int plus_petit_chemin(Graphe* g, int u, int v){
     {
         distance[i] = 0;
     }
-
-    // // on cree une autre table pour stocker l'etat de visite
-    // // un sommet peut etre 
-    // //  non visite
-    // //  ouvert (certains de ses descendant ne sont pas encore visites) 
-    // //  ferme (tous ses descendant sont visites)
-    // etat_visite visite[g->nbsom];
-    // for (int i = 0; i < g->nbsom; i++)
-    // {
-    //     visite[i] = non_visite;
-    // }
-    // visite[u] = ouvert;
     
     // on cree un file pour les sommets a visiter
     S_file* file = calloc(1, sizeof(S_file));
@@ -152,7 +140,7 @@ int plus_petit_chemin(Graphe* g, int u, int v){
     enfile(file, u);
 
     // on fait un parcourt en largeur jusqu'a ce qu'on rencontre le sommet v
-    while(distance[v] == 0){
+    while(distance[v-1] == 0){
 
         // si on a pas visite le sommet v et la file est deja vide
         // c'est parce que u et v n'est pas connexe
@@ -164,7 +152,7 @@ int plus_petit_chemin(Graphe* g, int u, int v){
         // on prend la tete de la file et parcourt sa liste de voisins
         // et enfile les sommets prochains
         sommet_en_cours = defile(file);
-        cell_arete = g->T_som[sommet_en_cours]->L_voisin;
+        cell_arete = g->T_som[sommet_en_cours-1]->L_voisin;
         while(cell_arete){
             
             // on teste le numero de sommet a enfiler
@@ -174,13 +162,13 @@ int plus_petit_chemin(Graphe* g, int u, int v){
             else a_enfiler = cell_arete->a->u;
             
             // si deja visite, on ne prend pas, sinon on le prend et note sa distance
-            if(distance[a_enfiler] == 0){
+            if(distance[a_enfiler-1] == 0){
                 enfile(file, a_enfiler);
 
                 // Si on a note deja une distance plus petite, on la garde
                 //   sinon on note la distance
-                if(distance[a_enfiler] == 0 || (distance[sommet_en_cours]+1 < distance[a_enfiler])){
-                    distance[a_enfiler] = distance[sommet_en_cours]+1;
+                if(distance[a_enfiler-1] == 0 || (distance[sommet_en_cours-1]+1 < distance[a_enfiler-1])){
+                    distance[a_enfiler-1] = distance[sommet_en_cours-1]+1;
                 }
             }
             cell_arete = cell_arete->suiv;
@@ -188,7 +176,7 @@ int plus_petit_chemin(Graphe* g, int u, int v){
     }
     liberer_file(file);
 
-    return distance[v];
+    return distance[v-1];
 }
 
 // Q7.3
@@ -200,7 +188,7 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
 
     // securisation
     assert(g);
-    assert(u < g->nbsom && v < g->nbsom);
+    assert(u-1 < g->nbsom && v-1 < g->nbsom);
     if(u == v) return 0;
 
     int sommet_en_cours, a_enfiler;
@@ -220,6 +208,7 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
     {
         distance[i] = g->nbsom + 1;
     }
+    distance[u-1] = 0;
 
     // on cree une autre table pour stocker l'etat de visite
     // un sommet peut etre 
@@ -231,6 +220,7 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
     {
         visite[i] = non_visite;
     }
+    visite[u-1] = ouvert;
     
     // on cree un file pour les sommets a visiter
     S_file* file = calloc(1, sizeof(S_file));
@@ -243,7 +233,7 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
         // on prend la tete de la file et parcourt sa liste de voisins
         // et enfile les sommets prochains
         sommet_en_cours = defile(file);
-        cell_arete = g->T_som[sommet_en_cours]->L_voisin;
+        cell_arete = g->T_som[sommet_en_cours-1]->L_voisin;
         while(cell_arete){
             // on teste le numero de sommet a enfiler
             // a_enfiler = cell_arete->a->u == sommet_en_cours ? v : u;
@@ -252,15 +242,15 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
             else a_enfiler = cell_arete->a->u;
             
             // si deja visite, on ne prend pas, sinon on le prend et note sa distance
-            if(visite[a_enfiler] == non_visite){
-                visite[a_enfiler] = ouvert;
-                distance[a_enfiler] = distance[sommet_en_cours]+1;
-                pere[a_enfiler] = sommet_en_cours;
+            if(visite[a_enfiler-1] == non_visite){
+                visite[a_enfiler-1] = ouvert;
+                distance[a_enfiler-1] = distance[sommet_en_cours-1]+1;
+                pere[a_enfiler-1] = sommet_en_cours;
                 enfile(file, a_enfiler);
             }
             cell_arete = cell_arete->suiv;
         }
-        visite[sommet_en_cours] = ferme;
+        visite[sommet_en_cours-1] = ferme;
     }
 
     // creation et initialisation d'une liste a renvoyer
@@ -268,7 +258,7 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
     Init_Liste(&chaine_parcourt);
     
     // le cas ou sommets u et v ne sont pas connexe
-    if(pere[v] == -1){
+    if(pere[v-1] == -1){
         liberer_file(file);
         return chaine_parcourt;
     }
@@ -280,7 +270,7 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
     sommet_en_cours = v;
     while(sommet_en_cours != u){
         ajoute_en_tete(&chaine_parcourt, sommet_en_cours);
-        sommet_en_cours = pere[sommet_en_cours];
+        sommet_en_cours = pere[sommet_en_cours-1];
     }
     ajoute_en_tete(&chaine_parcourt, sommet_en_cours); // on ajoute u
 
@@ -288,4 +278,81 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
     liberer_file(file);
 
     return chaine_parcourt;
+}
+
+void liberer_matrice_2d(int** m, int taille){
+    for (int i = 0; i < taille; i++)
+    {
+        free(m[i]);
+    }
+    free(m);
+}
+
+// Q7.4
+// pour verifier le nombre de chaines qui passe par une arete quelconque est inferieur a gamma
+// i.e. nb_arete_entre_a_b < gamma
+// mais cette fonction cree d'abords le graphe correspondant
+// ensuite calcule la plus courte chaine pour chaque commodite
+// enfin fait cette verification
+int reorganiserReseau(Reseau *R){  
+
+    // creation du graphe et
+    // calcul des chaines plus courtes
+    Graphe* g = creerGraphe(R);
+    ListeEntier parcourt = NULL;
+    for (int i = 0; i < g->nbcommod; i++)
+    {
+        printf("Pour commodite d'extremite %d et %d, la chaine la plus courte est : ", (g->T_commod)[i].e1, (g->T_commod)[i].e2);
+        parcourt = chaine_arborescence(g, (g->T_commod)[i].e1, (g->T_commod)[i].e2);
+        afficher_liste_entier(&parcourt);
+        desalloue(&parcourt);
+    }
+
+
+    // une matrice sommet-sommet pour stocker les nombres d'aretes entre 2 sommets
+    // et initialisation en 0
+    int nb_sommet = g->nbsom;
+    int gamma = g->gamma;
+    int **matrice_passant = calloc(nb_sommet, sizeof(int*));
+    for (int i = 0; i < nb_sommet; i++)
+    {
+        matrice_passant[i] = calloc(nb_sommet, sizeof(int));
+    }
+    
+    // for (int i = 0; i < nb_sommet; i++)
+    // {
+    //     for (int j = 0; j < nb_sommet; j++)
+    //     {
+    //         matrice_passant[i][j] = 0;
+    //     }
+        
+    // }
+    
+    // verification de gamma
+    // on compte les nombres d'aretes
+    Cellule_arete* cell_a = NULL;
+    for (int i = 0; i < g->nbsom; i++)
+    {
+        cell_a = g->T_som[i]->L_voisin;
+        while(cell_a){
+            matrice_passant[cell_a->a->u-1][cell_a->a->v-1]++;
+            cell_a = cell_a->suiv;
+        }
+    }
+    liberation_graph(g);
+
+    // ensuite on va les comparer avec gamma
+    for (int i = 0; i < nb_sommet; i++)
+    {
+        for (int j = 0; j < nb_sommet; j++)
+        {
+            if(matrice_passant[i][j]/2 > gamma){
+                liberer_matrice_2d(matrice_passant, nb_sommet);
+                return 0;
+            }
+        }
+        
+    }
+    liberer_matrice_2d(matrice_passant, nb_sommet);
+    return 1;
 }
