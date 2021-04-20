@@ -241,7 +241,9 @@ ListeEntier chaine_arborescence(Graphe* g, int u, int v){
                  a_enfiler = cell_arete->a->v;
             else a_enfiler = cell_arete->a->u;
             
-            // si deja visite, on ne prend pas, sinon on le prend et note sa distance
+            // si deja visite, on ne prend pas, sinon on le prend et calcule sa distance
+            //  et marque son status comme ouvert(en train de visiter)
+            //  et memorise son ancetre
             if(visite[a_enfiler-1] == non_visite){
                 visite[a_enfiler-1] = ouvert;
                 distance[a_enfiler-1] = distance[sommet_en_cours-1]+1;
