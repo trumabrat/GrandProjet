@@ -20,8 +20,6 @@ int main()
     if(reorganiserReseau(r)) {
         printf("ok!\n");
     }
-    // Q7.5
-    // 
 
     // liberation de memoire
     liberer_chaines(c);

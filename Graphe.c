@@ -356,3 +356,20 @@ int reorganiserReseau(Reseau *R){
     liberer_matrice_2d(matrice_passant, nb_sommet);
     return 1;
 }
+
+    // Q7.5
+    // I. Puisque le graphe peut etre reutilise
+    //  on peut donc externaliser cette fonction et modifier la signature de reorganiserReseau
+    //  (par exemple) int reorganiserReseau(Graphe* g);
+    // II. La chaine la plus courte de chaque commodite ne sera pas renvoye par cette fonction
+    //  on peut egalement ecrire une fonction pour le faire
+    //  (par exemple) ListeEntier* les_plus_courts_chemins(Graphe* g);
+    // III. Pour la verification de gamma, on peut creer une table de hachage par chainage
+    //  dans chaque case on stocke un pointeur vers une struct contenant des information 
+    //  comme les sommets une arete relie, nombre d'aretes entre eux
+    //  cela permettra d'economiser l'espace
+    // struct Case_arete
+    // {
+    //     int u, v; // numero des sommets
+    //     int nb_aretes; // nombre d'aretes entre sommets u et v
+    // };
